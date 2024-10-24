@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from flask_socketio import SocketIO
+from flask_cors import CORS
 from .config import config
 
 db = SQLAlchemy()
@@ -19,6 +20,9 @@ def create_app(config_name):
     login_manager.init_app(app)
     csrf.init_app(app)
     socketio.init_app(app)
+
+    # CORS(app, resources={r"/api/*": {"origins": "*"}})  # Enables CORS only for routes matching "/api/*"
+    CORS(app)
 
     from .models import User
 
