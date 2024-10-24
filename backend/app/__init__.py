@@ -16,6 +16,11 @@ def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
+    @app.after_request
+    def set_headers(response):
+        response.headers["Referrer-Policy"] = 'no-referrer'
+        return response
+
     db.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
