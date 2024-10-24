@@ -1,52 +1,51 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
-from flask_socketio import SocketIO
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
-from .config import config
+from werkzeug.exceptions import HTTPException
+from .config import Config
 
 db = SQLAlchemy()
-login_manager = LoginManager()
-csrf = CSRFProtect()
-socketio = SocketIO()
+jwt = JWTManager()
 
 
-def create_app(config_name):
+def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
-
-    @app.after_request
-    def set_headers(response):
-        response.headers["Referrer-Policy"] = 'no-referrer'
-        return response
+    app.config.from_object(config_class)
 
     db.init_app(app)
-    login_manager.init_app(app)
-    csrf.init_app(app)
-    socketio.init_app(app)
-
-    # CORS(app, resources={r"/api/*": {"origins": "*"}})  # Enables CORS only for routes matching "/api/*"
+    jwt.init_app(app)
     CORS(app)
 
-    from .models import User
+    @app.errorhandler(HTTPException)
+    def handle_http_exception(e):
+        response = e.get_response()
+        response.data = jsonify({
+            'code': e.code,
+            'name': e.name,
+            'description': e.description,
+        }).data
+        response.content_type = 'application/json'
+        return response
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
-    from .routes.auth import auth as auth_blueprint
-    from .routes.transactions import transactions as transactions_blueprint
-    from .routes.friends import friends as friends_blueprint
     from .routes.accounts import accounts as accounts_blueprint
-    from .routes.categories import categories as categories_blueprint
-    from .routes.split_bills import split_bills as split_bills_blueprint
+    app.register_blueprint(accounts_blueprint, url_prefix='/api/accounts')
 
-    app.register_blueprint(auth_blueprint)
-    app.register_blueprint(transactions_blueprint)
-    app.register_blueprint(friends_blueprint)
-    app.register_blueprint(accounts_blueprint)
-    app.register_blueprint(categories_blueprint)
-    app.register_blueprint(split_bills_blueprint)
+    from .routes.transactions import transactions as transactions_blueprint
+    app.register_blueprint(transactions_blueprint,
+                           url_prefix='/api/transactions')
+
+    from .routes.categories import categories as categories_blueprint
+    app.register_blueprint(categories_blueprint, url_prefix='/api/categories')
+
+    from .routes.goals import goals as goals_blueprint
+    app.register_blueprint(goals_blueprint, url_prefix='/api/goals')
+
+    from .routes.spending_limits import spending_limits as spending_limits_blueprint
+    app.register_blueprint(spending_limits_blueprint,
+                           url_prefix='/api/spending-limits')
 
     return app

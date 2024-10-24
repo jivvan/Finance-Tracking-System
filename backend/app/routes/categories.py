@@ -1,48 +1,27 @@
-from flask import Blueprint, jsonify, request
-from flask_login import login_required, current_user
-from ..models import Category
-from .. import db
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..models import db, User, Category
 
 categories = Blueprint('categories', __name__)
 
 
-@categories.route('/categories', methods=['GET'])
-@login_required
+@categories.route('/', methods=['GET'])
+@jwt_required()
 def get_categories():
-    categories = Category.query.filter_by(user_id=current_user.id).all()
-    return jsonify([{'id': category.id, 'name': category.name} for category in categories])
+    user_id = get_jwt_identity()
+    categories = Category.query.filter_by(user_id=user_id).all()
+    return jsonify([category.name for category in categories]), 200
 
 
-@categories.route('/categories', methods=['POST'])
-@login_required
-def add_category():
+@categories.route('/', methods=['POST'])
+@jwt_required()
+def create_category():
+    user_id = get_jwt_identity()
     data = request.get_json()
-    new_category = Category(name=data['name'], user_id=current_user.id)
+    name = data.get('name')
+
+    new_category = Category(name=name, user_id=user_id)
     db.session.add(new_category)
     db.session.commit()
-    return jsonify({'message': 'Category added successfully'}), 201
 
-
-@categories.route('/categories/<int:category_id>', methods=['PUT'])
-@login_required
-def update_category(category_id):
-    data = request.get_json()
-    category = Category.query.filter_by(
-        id=category_id, user_id=current_user.id).first()
-    if category:
-        category.name = data['name']
-        db.session.commit()
-        return jsonify({'message': 'Category updated successfully'}), 200
-    return jsonify({'message': 'Category not found'}), 404
-
-
-@categories.route('/categories/<int:category_id>', methods=['DELETE'])
-@login_required
-def delete_category(category_id):
-    category = Category.query.filter_by(
-        id=category_id, user_id=current_user.id).first()
-    if category:
-        db.session.delete(category)
-        db.session.commit()
-        return jsonify({'message': 'Category deleted successfully'}), 200
-    return jsonify({'message': 'Category not found'}), 404
+    return jsonify({'message': 'Category created successfully'}), 201

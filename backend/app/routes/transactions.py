@@ -1,39 +1,49 @@
-from flask import Blueprint, jsonify, request
-from flask_login import login_required, current_user
-from ..models import Transaction, Account
-from .. import db
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..models import db, User, Account, Transaction, Category
+from ..schemas import TransactionCreateSchema
 
 transactions = Blueprint('transactions', __name__)
 
 
-@transactions.route('/transactions', methods=['GET'])
-@login_required
+@transactions.route('/', methods=['GET'])
+@jwt_required()
 def get_transactions():
-    transactions = Transaction.query.filter_by(user_id=current_user.id).all()
-    return jsonify([transaction.to_dict() for transaction in transactions])
+    user_id = get_jwt_identity()
+    accounts = Account.query.filter_by(user_id=user_id).all()
+    transactions = []
+    for account in accounts:
+        transactions.extend(account.transactions.all())
+    return jsonify([{'amount': t.amount, 'description': t.description, 'date': t.date} for t in transactions]), 200
 
 
-@transactions.route('/transactions', methods=['POST'])
-@login_required
-def add_transaction():
-    data = request.get_json()
-    account = Account.query.filter_by(
-        id=data['account_id'], user_id=current_user.id).first()
+@transactions.route('/', methods=['POST'])
+@jwt_required()
+def create_transaction():
+    schema = TransactionCreateSchema()
+    errors = schema.validate(request.json)
+    if errors:
+        return jsonify(errors), 400
+
+    data = schema.load(request.json)
+    amount = data['amount']
+    description = data['description']
+    account_id = data['account_id']
+    category_id = data['category_id']
+
+    user_id = get_jwt_identity()
+    account = Account.query.filter_by(id=account_id, user_id=user_id).first()
     if not account:
         return jsonify({'message': 'Account not found'}), 404
 
-    category = 'test'  # Replace with actual categorization logic
+    category = Category.query.filter_by(
+        id=category_id, user_id=user_id).first()
+    if not category:
+        return jsonify({'message': 'Category not found'}), 404
+
     new_transaction = Transaction(
-        description=data['description'],
-        amount=data['amount'],
-        category=category,
-        account_id=data['account_id'],
-        user_id=current_user.id
-    )
+        amount=amount, description=description, account_id=account_id, category_id=category_id)
     db.session.add(new_transaction)
-
-    # Update account balance
-    account.balance += data['amount']
-
     db.session.commit()
-    return jsonify(new_transaction.to_dict()), 201
+
+    return jsonify({'message': 'Transaction created successfully'}), 201
