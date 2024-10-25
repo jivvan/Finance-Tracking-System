@@ -6,3 +6,14 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'super-secret'
+
+
+class TestConfig(Config):
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'TEST_DATABASE_URL') or 'sqlite:///finance.db'
+
+
+config = {
+    'development': TestConfig,
+    'production': Config
+}

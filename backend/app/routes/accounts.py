@@ -1,9 +1,16 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models import db, User, Account
-from ..schemas import AccountCreateSchema
+from ..schemas import AccountCreateSchema, AccountUpdateSchema
 
 accounts = Blueprint('accounts', __name__)
+
+
+def get_account_or_404(account_id, user_id):
+    account = Account.query.filter_by(id=account_id, user_id=user_id).first()
+    if not account:
+        return jsonify({'message': 'Account not found'}), 404
+    return account
 
 
 @accounts.route('/', methods=['GET'])
@@ -11,12 +18,13 @@ accounts = Blueprint('accounts', __name__)
 def get_accounts():
     user_id = get_jwt_identity()
     accounts = Account.query.filter_by(user_id=user_id).all()
-    return jsonify([account.name for account in accounts]), 200
+    return jsonify([{'name': account.name, 'balance': account.balance} for account in accounts]), 200
 
 
 @accounts.route('/', methods=['POST'])
 @jwt_required()
 def create_account():
+    user_id = get_jwt_identity()
     schema = AccountCreateSchema()
     errors = schema.validate(request.json)
     if errors:
@@ -26,9 +34,48 @@ def create_account():
     name = data['name']
     balance = data['balance']
 
-    user_id = get_jwt_identity()
+    exists = Account.query.filter_by(name=name, user_id=user_id).first()
+    if exists:
+        return jsonify({'message': "Account with same name already exists"}), 400
+
     new_account = Account(name=name, balance=balance, user_id=user_id)
     db.session.add(new_account)
     db.session.commit()
 
     return jsonify({'message': 'Account created successfully'}), 201
+
+
+@accounts.route('/<int:account_id>', methods=['PUT'])
+@jwt_required()
+def update_account(account_id):
+    user_id = get_jwt_identity()
+    account = get_account_or_404(account_id, user_id)
+    if isinstance(account, tuple):
+        return account
+
+    schema = AccountUpdateSchema()
+    errors = schema.validate(request.json)
+    if errors:
+        return jsonify(errors), 400
+
+    data = schema.load(request.json)
+    account.name = data.get('name', account.name)
+    account.balance = data.get('balance', account.balance)
+
+    db.session.commit()
+
+    return jsonify({'message': 'Account updated successfully'}), 200
+
+
+@accounts.route('/<int:account_id>', methods=['DELETE'])
+@jwt_required()
+def delete_account(account_id):
+    user_id = get_jwt_identity()
+    account = get_account_or_404(account_id, user_id)
+    if isinstance(account, tuple):
+        return account
+
+    db.session.delete(account)
+    db.session.commit()
+
+    return jsonify({'message': 'Account deleted successfully'}), 200
