@@ -22,11 +22,14 @@ class User(db.Model):
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    balance = db.Column(db.Float)
+    name = db.Column(db.String(64), nullable=False)
+    balance = db.Column(db.Float, default=0.0)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     transactions = db.relationship(
         'Transaction', backref='account', lazy='dynamic')
+    __table_args__ = (
+        db.UniqueConstraint('name', 'user_id', name='uix_user_account_name'),
+    )
 
 
 class Transaction(db.Model):
@@ -40,12 +43,16 @@ class Transaction(db.Model):
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
+    name = db.Column(db.String(64), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     limit = db.Column(db.Float, default=0.0)
     category_type = db.Column(db.String(7), default='expense')
     transactions = db.relationship(
         'Transaction', backref='category', lazy='dynamic')
+
+    __table_args__ = (
+        db.UniqueConstraint('name', 'user_id', name='uix_user_category_name'),
+    )
 
 
 class Goal(db.Model):
