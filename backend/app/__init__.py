@@ -18,7 +18,7 @@ def create_app(mode='development'):
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "Authorization"}})
+    CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "Content-Type,Authorization", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]}})
 
     @app.errorhandler(HTTPException)
     def handle_http_exception(e):
