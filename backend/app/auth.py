@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from .models import User, db
+from .models import User, db, Account, Category
 from .schemas import UserRegisterSchema, UserLoginSchema, ForgotPasswordSchema
 
 auth = Blueprint('auth', __name__)
@@ -24,9 +24,30 @@ def register():
     if User.query.filter_by(email=email).first():
         return jsonify({'message': 'Email already exists'}), 400
 
+    # Create and commit the new user
     new_user = User(username=username, email=email)
     new_user.set_password(password)
     db.session.add(new_user)
+    db.session.commit()  # Commit to get the new_user.id
+
+    # Create a Cash account for the user
+    cash_account = Account(name="Cash", balance=0.0, user_id=new_user.id)
+    db.session.add(cash_account)
+
+    # Add basic categories for expenses and income
+    categories = [
+        {"name": "Food", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Transport", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Entertainment", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Salary", "category_type": "income", "user_id": new_user.id},
+        {"name": "Investments", "category_type": "income", "user_id": new_user.id},
+    ]
+
+    for category_data in categories:
+        category = Category(**category_data)
+        db.session.add(category)
+
+    # Final commit for account and categories
     db.session.commit()
 
     return jsonify({'message': 'User created successfully'}), 201
@@ -50,12 +71,6 @@ def login():
         return jsonify({'access_token': access_token}), 200
 
     return jsonify({'message': 'Invalid credentials'}), 401
-
-
-@auth.route('/logout', methods=['POST'])
-@jwt_required()
-def logout():
-    return jsonify({'message': 'Successfully logged out'}), 200
 
 
 @auth.route('/forgot-password', methods=['POST'])

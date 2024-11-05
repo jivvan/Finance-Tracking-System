@@ -76,9 +76,17 @@ class ContributionUpdateSchema(Schema):
 
 class CategoryCreateSchema(Schema):
     name = fields.Str(required=True, validate=validate.Length(min=3, max=64))
-    limit = fields.Int()
+    category_type = fields.Str(required=True)
+    limit = fields.Float()
 
 
 class CategoryUpdateSchema(Schema):
     name = fields.Str(validate=validate.Length(min=3, max=64))
-    limit = fields.Int()
+    category_type = fields.Str()
+    limit = fields.Float()
+
+
+class PredictionSchema(Schema):
+    category_id = fields.Int()
+    num_periods = fields.Int()
+    lookback = fields.Int()

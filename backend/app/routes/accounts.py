@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..models import db, User, Account
+from flask_jwt_extended import get_jwt_identity
+from ..utils import jwt_required_user_exists
+from ..models import db, Account
 from ..schemas import AccountCreateSchema, AccountUpdateSchema
 
 accounts = Blueprint('accounts', __name__)
@@ -14,7 +15,7 @@ def get_account_or_404(account_id, user_id):
 
 
 @accounts.route('/', methods=['GET'])
-@jwt_required()
+@jwt_required_user_exists
 def get_accounts():
     user_id = get_jwt_identity()
     accounts = Account.query.filter_by(user_id=user_id).all()
@@ -22,7 +23,7 @@ def get_accounts():
 
 
 @accounts.route('/', methods=['POST'])
-@jwt_required()
+@jwt_required_user_exists
 def create_account():
     user_id = get_jwt_identity()
     schema = AccountCreateSchema()
@@ -46,7 +47,7 @@ def create_account():
 
 
 @accounts.route('/<int:account_id>', methods=['PUT'])
-@jwt_required()
+@jwt_required_user_exists
 def update_account(account_id):
     user_id = get_jwt_identity()
     account = get_account_or_404(account_id, user_id)
@@ -68,7 +69,7 @@ def update_account(account_id):
 
 
 @accounts.route('/<int:account_id>', methods=['DELETE'])
-@jwt_required()
+@jwt_required_user_exists
 def delete_account(account_id):
     user_id = get_jwt_identity()
     account = get_account_or_404(account_id, user_id)

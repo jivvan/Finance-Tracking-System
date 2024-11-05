@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
+from ..utils import jwt_required_user_exists
 from ..models import db, User, Account, Goal, Contribution
 from ..schemas import ContributionCreateSchema, ContributionUpdateSchema
 
@@ -7,7 +8,7 @@ contributions = Blueprint('contributions', __name__)
 
 
 @contributions.route('/', methods=['GET'])
-@jwt_required()
+@jwt_required_user_exists
 def get_contributions():
     user_id = get_jwt_identity()
     goal_id = request.json.get('goal_id', None)
@@ -18,7 +19,7 @@ def get_contributions():
 
 
 @contributions.route('/', methods=['POST'])
-@jwt_required()
+@jwt_required_user_exists
 def create_contribution():
     schema = ContributionCreateSchema()
     errors = schema.validate(request.json)
@@ -55,7 +56,7 @@ def create_contribution():
 
 
 @contributions.route('/<int:contribution_id>', methods=['PUT'])
-@jwt_required()
+@jwt_required_user_exists
 def update_contribution(contribution_id):
     schema = ContributionUpdateSchema()
     errors = schema.validate(request.json)
@@ -103,7 +104,7 @@ def update_contribution(contribution_id):
 
 
 @contributions.route('/<int:contribution_id>', methods=['DELETE'])
-@jwt_required()
+@jwt_required_user_exists
 def delete_contribution(contribution_id):
     user_id = get_jwt_identity()
     contribution = Contribution.query.filter_by(
