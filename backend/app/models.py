@@ -22,7 +22,7 @@ class User(db.Model):
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64))
+    name = db.Column(db.String(64), unique=True)
     balance = db.Column(db.Float)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     transactions = db.relationship(
@@ -40,8 +40,10 @@ class Transaction(db.Model):
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64))
+    name = db.Column(db.String(64), unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    limit = db.Column(db.Float, default=0.0)
+    category_type = db.Column(db.String(7), default='expense')
     transactions = db.relationship(
         'Transaction', backref='category', lazy='dynamic')
 
@@ -52,10 +54,13 @@ class Goal(db.Model):
     target_amount = db.Column(db.Float)
     current_amount = db.Column(db.Float, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    contributions = db.relationship(
+        'Contribution', backref='goal', lazy='dynamic')
 
 
-class SpendingLimit(db.Model):
+class Contribution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    limit_amount = db.Column(db.Float)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    amount = db.Column(db.Float)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
+    goal_id = db.Column(db.Integer, db.ForeignKey('goal.id'))

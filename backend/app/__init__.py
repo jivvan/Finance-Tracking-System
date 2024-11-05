@@ -4,16 +4,16 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException
-from .config import Config
+from .config import config
 
 db = SQLAlchemy()
 jwt = JWTManager()
 migrate = Migrate()
 
 
-def create_app(config_class=Config):
+def create_app(mode='development'):
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(config[mode])
 
     db.init_app(app)
     jwt.init_app(app)
@@ -47,8 +47,8 @@ def create_app(config_class=Config):
     from .routes.goals import goals as goals_blueprint
     app.register_blueprint(goals_blueprint, url_prefix='/api/goals')
 
-    from .routes.spending_limits import spending_limits as spending_limits_blueprint
-    app.register_blueprint(spending_limits_blueprint,
-                           url_prefix='/api/spending-limits')
+    from .routes.contributions import contributions as contributions_blueprint
+    app.register_blueprint(contributions_blueprint,
+                           url_prefix='/api/contributions')
 
     return app
