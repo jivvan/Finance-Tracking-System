@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -18,8 +18,15 @@ def create_app(mode='development'):
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "Content-Type,Authorization",
-         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]}})
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}},
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         supports_credentials=True)
+
+    @app.before_request
+    def handle_preflight():
+        if request.method == 'OPTIONS':
+            return jsonify({"ok": True}), 200
 
     @app.errorhandler(HTTPException)
     def handle_http_exception(e):
