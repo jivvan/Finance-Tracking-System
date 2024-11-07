@@ -1,28 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
+import Sidebar from "../Components/Sidebar";
 import Header1TEMP from "../Components/Header1TEMP";
-import ExpenseCard from "../Components/ExpenseCard";
-import IncomeCard from "../Components/IncomeCard";
-import AccountCard from "../Components/AccountCard";
+import OverviewChart from "../Components/Charts/OverviewChart";
+import ExpenseChart from "../Components/Charts/ExpenseChart";
+import IncomeChart from "../Components/Charts/IncomeChart";
+import RecentTransactions from "../Components/Charts/RecentTransactions";
+import QuickCreate from "../Components/QuickCreate";
 
-function Dashboard() {
-  const [isExpenseCardVisible, setIsExpenseCardVisible] = useState(false);
-  const [isIncomeCardVisible, setIsIncomeCardVisible] = useState(false);
-  const [isAccountCardVisible, setIsAccountCardVisible] = useState(false);
-
-  const toggleExpenseCard = () => {
-    setIsExpenseCardVisible(!isExpenseCardVisible);
-  };
-
-  const toggleIncomeCard = () => {
-    setIsIncomeCardVisible(!isIncomeCardVisible);
-  };
-
-  const toggleAccountCard = () => {
-    setIsAccountCardVisible(!isAccountCardVisible);
-  };
-
+const Dashboard = () => {
   return (
-    <div>
+    <div className="bg-gray-50 dark:bg-gray-900">
       <header>
         <Header1TEMP />
       </header>
@@ -43,17 +30,8 @@ function Dashboard() {
           </p>
         </a>
       </div>
-      {isExpenseCardVisible && (
-        <ExpenseCard toggleExpenseCard={toggleExpenseCard} />
-      )}
-      {isIncomeCardVisible && (
-        <IncomeCard toggleIncomeCard={toggleIncomeCard} />
-      )}
-      {isAccountCardVisible && (
-        <AccountCard toggleAccountCard={toggleAccountCard} />
-      )}
-    </div>
+    </>
   );
-}
+};
 
 export default Dashboard;
