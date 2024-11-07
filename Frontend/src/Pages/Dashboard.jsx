@@ -1,59 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
+import Sidebar from "../Components/Sidebar";
 import Header1TEMP from "../Components/Header1TEMP";
-import ExpenseCard from "../Components/ExpenseCard";
-import IncomeCard from "../Components/IncomeCard";
-import AccountCard from "../Components/AccountCard";
+import OverviewChart from "../Components/Charts/OverviewChart";
+import ExpenseChart from "../Components/Charts/ExpenseChart";
+import IncomeChart from "../Components/Charts/IncomeChart";
+import RecentTransactions from "../Components/Charts/RecentTransactions";
+import QuickCreate from "../Components/QuickCreate";
 
-function Dashboard() {
-  const [isExpenseCardVisible, setIsExpenseCardVisible] = useState(false);
-  const [isIncomeCardVisible, setIsIncomeCardVisible] = useState(false);
-  const [isAccountCardVisible, setIsAccountCardVisible] = useState(false);
-
-  const toggleExpenseCard = () => {
-    setIsExpenseCardVisible(!isExpenseCardVisible);
-  };
-
-  const toggleIncomeCard = () => {
-    setIsIncomeCardVisible(!isIncomeCardVisible);
-  };
-
-  const toggleAccountCard = () => {
-    setIsAccountCardVisible(!isAccountCardVisible);
-  };
-
+const Dashboard = () => {
   return (
-    <div className="bg-gray-50 dark:bg-gray-900">
-      <header>
-        <Header1TEMP />
-      </header>
-      <div className="flex items-center justify-center w-full py-5">
-        <a href="#" onClick={toggleExpenseCard}>
-          <p className="w-48 py-2 ml-5 text-center text-white bg-red-500 rounded-full h-15">
-            + Add Expense
-          </p>
-        </a>
-        <a href="#" onClick={toggleIncomeCard}>
-          <p className="w-48 py-2 ml-5 text-center text-white bg-green-500 rounded-full h-15">
-            + Add Income
-          </p>
-        </a>
-        <a href="#" onClick={toggleAccountCard}>
-          <p className="w-48 py-2 ml-5 text-center text-white bg-yellow-400 rounded-full h-15">
-            + Add Account
-          </p>
-        </a>
+    <>
+      <Header1TEMP />
+      <div className="flex h-screen bg-gray-100">
+        <Sidebar />
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto bg-gray-200">
+            <QuickCreate />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <OverviewChart />
+              <ExpenseChart />
+              <IncomeChart />
+            </div>
+            <div className="mt-4">
+              <RecentTransactions />
+            </div>
+          </main>
+        </div>
       </div>
-      {isExpenseCardVisible && (
-        <ExpenseCard toggleExpenseCard={toggleExpenseCard} />
-      )}
-      {isIncomeCardVisible && (
-        <IncomeCard toggleIncomeCard={toggleIncomeCard} />
-      )}
-      {isAccountCardVisible && (
-        <AccountCard toggleAccountCard={toggleAccountCard} />
-      )}
-    </div>
+    </>
   );
-}
+};
 
 export default Dashboard;
