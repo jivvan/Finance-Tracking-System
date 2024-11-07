@@ -54,7 +54,7 @@ function Signup() {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 py-14">
+    <section className="dark:bg-gray-900 py-14">
       <div className="container flex items-center justify-between mx-auto">
         <div className="w-1/2 mb-32 ml-28 ">
           <h1 className="text-4xl font-bold text-left text-blue-600">

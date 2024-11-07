@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function Home() {
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 py-16">
+    <section className="dark:bg-gray-900 py-16">
       <div className="container mx-auto flex flex-col items-center justify-center px-6 py-8">
         <h1 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">
           Welcome to Finance Tracker
