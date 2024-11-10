@@ -1,6 +1,7 @@
 import React from "react";
 import { Sidebar } from "flowbite-react";
 import { HiChartBar, HiCurrencyDollar, HiUser } from "react-icons/hi";
+import { MdAccountBalance } from "react-icons/md";
 
 const SidebarComponent = () => {
   return (
@@ -12,6 +13,9 @@ const SidebarComponent = () => {
           </Sidebar.Item>
           <Sidebar.Item href="#" icon={HiCurrencyDollar}>
             Transactions
+          </Sidebar.Item>
+          <Sidebar.Item href="/accounts" icon={MdAccountBalance}>
+            Accounts
           </Sidebar.Item>
           <Sidebar.Item href="#" icon={HiUser}>
             Profile

@@ -9,29 +9,26 @@ import QuickCreate from "../Components/QuickCreate";
 
 const Dashboard = () => {
   return (
-    <div className="bg-gray-50 dark:bg-gray-900">
-      <header>
-        <Header1TEMP />
-      </header>
-      <div className="flex items-center justify-center w-full py-5">
-        <a href="#" onClick={toggleExpenseCard}>
-          <p className="w-48 py-2 ml-5 text-center text-white bg-red-500 rounded-full h-15">
-            + Add Expense
-          </p>
-        </a>
-        <a href="#" onClick={toggleIncomeCard}>
-          <p className="w-48 py-2 ml-5 text-center text-white bg-green-500 rounded-full h-15">
-            + Add Income
-          </p>
-        </a>
-        <a href="#" onClick={toggleAccountCard}>
-          <p className="w-48 py-2 ml-5 text-center text-white bg-yellow-400 rounded-full h-15">
-            + Add Account
-          </p>
-        </a>
+    <>
+      <Header1TEMP />
+      <div className="flex h-screen ">
+        <Sidebar />
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto">
+            <QuickCreate />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <OverviewChart />
+              <ExpenseChart />
+              <IncomeChart />
+            </div>
+            <div className="mt-4">
+              <RecentTransactions />
+            </div>
+          </main>
+        </div>
       </div>
     </>
   );
-};
+}
 
 export default Dashboard;
