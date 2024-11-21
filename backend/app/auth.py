@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
+from .utils import jwt_required_user_exists
 from .models import User, db, Account, Category
 from .schemas import UserRegisterSchema, UserLoginSchema, ForgotPasswordSchema
 
@@ -71,6 +73,21 @@ def login():
         return jsonify({'access_token': access_token}), 200
 
     return jsonify({'message': 'Invalid credentials'}), 401
+
+
+@auth.route('/profile', methods=['GET'])
+@jwt_required_user_exists
+def profile():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'message': 'Unable to fetch user details'}), 401
+    user = {
+        'id': user.id,
+        'email': user.email,
+        'username': user.username
+    }
+    return jsonify({'user_details': user}), 200
 
 
 @auth.route('/forgot-password', methods=['POST'])
