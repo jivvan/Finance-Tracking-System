@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Sidebar from "../Components/Sidebar";
-import Header1TEMP from "../Components/Header1TEMP";
 import OverviewChart from "../Components/Charts/OverviewChart";
 import ExpenseChart from "../Components/Charts/ExpenseChart";
 import IncomeChart from "../Components/Charts/IncomeChart";
@@ -17,44 +15,38 @@ const Dashboard = () => {
   const [currentAccount, setCurrentAccount] = useState("All accounts");
   const accountOptions = ["All accounts", "Cash", "Bank"];
   return (
-    <>
-      <Header1TEMP />
-      <div className="flex bg-gray-100">
-        <Sidebar />
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto bg-gray-200">
-            <QuickCreate />
-            <div className="flex flex-col mb-4 w-max">
-              <Select id="countries" required>
-                {accountOptions.map((acc) => {
-                  return <option>{acc}</option>;
-                })}
-              </Select>
-            </div>
-            <KeyMetrics />
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <OverviewChart />
-              <ExpenseChart />
-              <IncomeChart />
-            </div>
-            <div className="mt-4">
-              <RecentTransactions />
-            </div>
-            <hr className="mt-4 border border-gray-300 rounded-lg" />
-            <div className="mt-4">
-              <ExpensePrediction />
-            </div>
-            <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-2">
-              <SavingGoals />
-              <SpendingLimits />
-            </div>
-            <div className="mt-4">
-              <FinanceCalendar />
-            </div>
-          </main>
+    <div className="flex flex-col flex-1 overflow-hidden">
+      <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto bg-gray-200">
+        <QuickCreate />
+        <div className="flex flex-col mb-4 w-max">
+          <Select id="countries" required>
+            {accountOptions.map((acc) => {
+              return <option>{acc}</option>;
+            })}
+          </Select>
         </div>
-      </div>
-    </>
+        <KeyMetrics />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <OverviewChart />
+          <ExpenseChart />
+          <IncomeChart />
+        </div>
+        <div className="mt-4">
+          <RecentTransactions />
+        </div>
+        <hr className="mt-4 border border-gray-300 rounded-lg" />
+        <div className="mt-4">
+          <ExpensePrediction />
+        </div>
+        <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-2">
+          <SavingGoals />
+          <SpendingLimits />
+        </div>
+        <div className="mt-4">
+          <FinanceCalendar />
+        </div>
+      </main>
+    </div>
   );
 };
 
