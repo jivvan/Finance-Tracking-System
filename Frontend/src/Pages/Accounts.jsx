@@ -3,6 +3,7 @@ import Header1TEMP from "../Components/Header1TEMP";
 import { Card, Button, Label, Select, TextInput } from "flowbite-react";
 import axios from "axios";
 import Sidebar from "../Components/Sidebar";
+import QuickCreate from "../Components/QuickCreate";
 
 function Accounts() {
   const [cardsData, setCardsData] = useState([]);
@@ -30,10 +31,12 @@ function Accounts() {
 
   return (
     <>
-      <Header1TEMP />
       <div className="flex h-screen bg-gray-100"> 
         <Sidebar />
         <div className="flex-1 p-4">
+          <div>
+          <QuickCreate/>
+          </div>
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold">Accounts</h1>
             <div className="flex items-center space-x-4">

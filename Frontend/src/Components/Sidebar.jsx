@@ -8,10 +8,10 @@ const SidebarComponent = () => {
     <Sidebar aria-label="Default sidebar example" className="w-64">
       <Sidebar.Items>
         <Sidebar.ItemGroup>
-          <Sidebar.Item href="#" icon={HiChartBar}>
+          <Sidebar.Item href="/dashboard" icon={HiChartBar}>
             Dashboard
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiCurrencyDollar}>
+          <Sidebar.Item href="/transactions" icon={HiCurrencyDollar}>
             Transactions
           </Sidebar.Item>
           <Sidebar.Item href="/accounts" icon={MdAccountBalance}>

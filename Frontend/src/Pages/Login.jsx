@@ -4,7 +4,7 @@ import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function Login() {
+function Login({setIsAuthenticated}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ function Login() {
       if (response.status === 200) {
         alert("Login successful!");
         localStorage.setItem("token", response.data.access_token);
+        setIsAuthenticated(true)
         navigate("/Dashboard");
       } else {
         alert("Login failed. Please check your credentials.");
