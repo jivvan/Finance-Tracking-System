@@ -1,24 +1,46 @@
 // src/AppRouter.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Dashboard from "./Pages/Dashboard";
-import { Profile } from "./Pages/Profile";
-import Header1TEMP from "./Components/Header1TEMP";
+import Profile from "./Pages/Profile";
+import Accounts from "./Pages/Accounts";
+import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
 import ProtectedRoute from "./ProtectedRoute";
+import Transactions from "./Pages/Transactions";
 
 function AppRouter() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  useEffect(() => {
+    setIsAuthenticated(localStorage.getItem("token") !== null);
+  }, []);
+  const path = window.location.pathname;
+  const dashView = !["/", "/login", "/signup"].includes(path);
   return (
     <Router>
-      <Header1TEMP />
-      <div className="flex">
-        <Sidebar />
+      {dashView && <Sidebar setSidebarCollapsed={setSidebarCollapsed} />}
+      {!dashView && (
+        <Header
+          isAuthenticated={isAuthenticated}
+          setIsAuthenticated={setIsAuthenticated}
+        />
+      )}
+      <div
+        className={
+          (dashView ? (sidebarCollapsed ? "ml-64" : "ml-20") : "") +
+          " transition-all duration-300 bg-gray-200"
+        }
+      >
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={<Login setIsAuthenticated={setIsAuthenticated} />}
+          />
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/dashboard"
@@ -27,6 +49,14 @@ function AppRouter() {
           <Route
             path="/profile"
             element={<ProtectedRoute element={Profile} />}
+          />
+          <Route
+            path="/transactions"
+            element={<ProtectedRoute element={Transactions} />}
+          />
+          <Route
+            path="/accounts"
+            element={<ProtectedRoute element={Accounts} />}
           />
 
           {/* <Route path="/what-is-finance-tracker" element={<WhatIsFinanceTracker />} />

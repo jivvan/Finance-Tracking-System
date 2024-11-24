@@ -9,7 +9,10 @@ export default {
     "./node_modules/flowbite/**/*.js", // Add this line
   ],
   theme: {
-    extend: {},
+    extend: {
+      
+
+    },
   },
   plugins: [flowbite, flowbite_react.plugin()],
 };

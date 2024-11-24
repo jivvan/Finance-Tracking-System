@@ -15,8 +15,8 @@ const Dashboard = () => {
   const [currentAccount, setCurrentAccount] = useState("All accounts");
   const accountOptions = ["All accounts", "Cash", "Bank"];
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <main className="flex-1 p-4 overflow-x-hidden overflow-y-auto bg-gray-200">
+    <>
+      <main className="p-4">
         <QuickCreate />
         <div className="flex flex-col mb-4 w-max">
           <Select id="countries" required>
@@ -46,7 +46,7 @@ const Dashboard = () => {
           <FinanceCalendar />
         </div>
       </main>
-    </div>
+    </>
   );
 };
 
