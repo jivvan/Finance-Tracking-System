@@ -1,24 +1,32 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException
-from .config import Config
+from .config import config
 
 db = SQLAlchemy()
 jwt = JWTManager()
 migrate = Migrate()
 
 
-def create_app(config_class=Config):
+def create_app(mode='development'):
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(config[mode])
 
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}},
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         supports_credentials=True)
+
+    @app.before_request
+    def handle_preflight():
+        if request.method == 'OPTIONS':
+            return jsonify({"ok": True}), 200
 
     @app.errorhandler(HTTPException)
     def handle_http_exception(e):
@@ -47,8 +55,8 @@ def create_app(config_class=Config):
     from .routes.goals import goals as goals_blueprint
     app.register_blueprint(goals_blueprint, url_prefix='/api/goals')
 
-    from .routes.spending_limits import spending_limits as spending_limits_blueprint
-    app.register_blueprint(spending_limits_blueprint,
-                           url_prefix='/api/spending-limits')
+    from .routes.contributions import contributions as contributions_blueprint
+    app.register_blueprint(contributions_blueprint,
+                           url_prefix='/api/contributions')
 
     return app
