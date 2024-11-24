@@ -4,14 +4,13 @@ import { Navbar, Button } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 
-function Header() {
+function Header({ isAuthenticated, setIsAuthenticated }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const isLoggedIn = token !== null;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setIsAuthenticated(false);
     navigate("/login");
   };
 
@@ -26,7 +25,7 @@ function Header() {
           <img src={logo} className="w-[100px] h-[60px]" alt="Logo" />
         </Navbar.Brand>
         <div className="flex items-center lg:order-2">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <Button
               onClick={handleLogout}
               //className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
@@ -51,10 +50,10 @@ function Header() {
           )}
           <Button
             onClick={() => setIsOpen(!isOpen)}
-            className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center text-sm rounded-lg lg:hidden"
+            color="blue"
             aria-expanded={isOpen}
           >
-            <span className="sr-only">Open main menu</span>
             <svg
               className="w-6 h-6"
               fill="currentColor"

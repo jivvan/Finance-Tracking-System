@@ -30,40 +30,35 @@ function Transactions() {
 
   return (
     <>
-      <div className="flex h-screen bg-gray-100">
-        <Sidebar />
-        <div className="flex-1 p-4">
-          <div>
-            <QuickCreate />
-          </div>
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold">View Your Transactions</h1>
-            <div className="flex items-center space-x-4">
-              <TextInput
-                id="search"
-                type="text"
-                placeholder="Search..."
-                className="w-64"
-              />
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="sortby" className="text-gray-700">
-                  Sort by:
-                </Label>
-                <Select id="sortby" className="w-48">
-                  <option>Default</option>
-                  <option>A-Z</option>
-                  <option>Balance (lowest first)</option>
-                  <option>Balance (highest first)</option>
-                </Select>
-              </div>
+      <main className="p-4">
+        <QuickCreate />
+        <Card>
+          <h1 className="text-2xl font-bold">Transactions</h1>
+          <div className="flex flex-wrap items-center justify-between space-x-4">
+            <TextInput
+              id="search"
+              type="text"
+              placeholder="Search..."
+              className="w-64"
+            />
+            <div className="flex items-center gap-2">
+              <Label htmlFor="sortby" className="text-gray-700">
+                Sort by:
+              </Label>
+              <Select id="sortby" className="w-48">
+                <option>Default</option>
+                <option>A-Z</option>
+                <option>Balance (lowest first)</option>
+                <option>Balance (highest first)</option>
+              </Select>
             </div>
           </div>
 
           <div className="mt-8 space-y-">
             {transactions.length > 0 ? (
               transactions.map((transaction) => (
-                <Card key={transaction.id} className="max-w-3xl mx-auto p-4">
-                  <div className="flex justify-between items-center">
+                <Card key={transaction.id} className="max-w-3xl p-4 mx-auto">
+                  <div className="flex items-center justify-between">
                     <div>
                       <h5 className="text-xl font-bold text-gray-900">
                         {transaction.description}
@@ -79,11 +74,13 @@ function Transactions() {
                 </Card>
               ))
             ) : (
-              <p className="text-center text-gray-700">No transactions found.</p>
+              <p className="text-center text-gray-700">
+                No transactions found.
+              </p>
             )}
           </div>
-        </div>
-      </div>
+        </Card>
+      </main>
     </>
   );
 }

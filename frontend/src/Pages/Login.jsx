@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 
-function Login({setIsAuthenticated}) {
+function Login({ setIsAuthenticated }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -22,31 +23,34 @@ function Login({setIsAuthenticated}) {
       );
 
       if (response.status === 200) {
-        alert("Login successful!");
+        toast("Login successful!");
         localStorage.setItem("token", response.data.access_token);
-        setIsAuthenticated(true)
+        setIsAuthenticated(true);
         navigate("/Dashboard");
       } else {
-        alert("Login failed. Please check your credentials.");
+        toast.error("Login failed. Please check your credentials.", {});
       }
     } catch (error) {
       console.error("There was an error!", error);
       if (error.response) {
-        alert(
-          `Login failed: ${error.response.data.message || "Unknown error"}`
-        );
+        let err = `Login failed: ${
+          error.response.data.message || "Unknown error"
+        }`;
+        toast.error(err);
       } else if (error.request) {
-        alert("No response received from the server. Please try again later.");
+        let err =
+          "No response received from the server. Please try again later.";
+        toast.error(err);
       } else {
-        alert(
-          "An error occurred while setting up the request. Please try again."
-        );
+        let err =
+          "An error occurred while setting up the request. Please try again.";
+        toast.error(err);
       }
     }
   };
 
   return (
-    <section className="dark:bg-gray-900 py-14">
+    <section className="m-auto dark:bg-gray-900 py-14">
       <div className="container flex items-center justify-between mx-auto">
         <div className="w-1/2 mb-32 ml-28 ">
           <h1 className="text-4xl font-bold text-left text-blue-600">
