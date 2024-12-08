@@ -38,11 +38,29 @@ def register():
 
     # Add basic categories for expenses and income
     categories = [
-        {"name": "Food", "category_type": "expense", "user_id": new_user.id},
-        {"name": "Transport", "category_type": "expense", "user_id": new_user.id},
-        {"name": "Entertainment", "category_type": "expense", "user_id": new_user.id},
+        # Income Categories: Salary,Freelance, Investments, Rentals, Business, Gifts, Refunds, Dividends, Royalties, Other Income
         {"name": "Salary", "category_type": "income", "user_id": new_user.id},
+        {"name": "Freelance", "category_type": "income", "user_id": new_user.id},
         {"name": "Investments", "category_type": "income", "user_id": new_user.id},
+        {"name": "Rentals", "category_type": "income", "user_id": new_user.id},
+        {"name": "Business", "category_type": "income", "user_id": new_user.id},
+        {"name": "Gifts", "category_type": "income", "user_id": new_user.id},
+        {"name": "Refunds", "category_type": "income", "user_id": new_user.id},
+        {"name": "Dividends", "category_type": "income", "user_id": new_user.id},
+        {"name": "Royalties", "category_type": "income", "user_id": new_user.id},
+        {"name": "Other Income", "category_type": "income", "user_id": new_user.id},
+
+        # Expense Categories: Groceries, Dining, Utilities, Rent/Mortgage, Transportation, Health, Entertainment, Clothing, Education, Other Expenses
+        {"name": "Groceries", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Dining", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Utilities", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Rent/Mortgage", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Transportation", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Health", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Entertainment", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Clothing", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Education", "category_type": "expense", "user_id": new_user.id},
+        {"name": "Other Expenses", "category_type": "expense", "user_id": new_user.id},
     ]
 
     for category_data in categories:
