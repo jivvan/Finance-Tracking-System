@@ -19,7 +19,7 @@ def get_account_or_404(account_id, user_id):
 def get_accounts():
     user_id = get_jwt_identity()
     accounts = Account.query.filter_by(user_id=user_id).all()
-    return jsonify([{'name': account.name, 'balance': account.balance} for account in accounts]), 200
+    return jsonify([{'id': account.id, 'name': account.name, 'balance': account.balance} for account in accounts]), 200
 
 
 @accounts.route('/', methods=['POST'])
