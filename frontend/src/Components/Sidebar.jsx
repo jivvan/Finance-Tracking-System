@@ -3,6 +3,7 @@ import { Sidebar } from "flowbite-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { HiChartBar, HiCurrencyDollar, HiUser, HiMenu } from "react-icons/hi";
 import { MdAccountBalance } from "react-icons/md";
+import { GoGoal } from "react-icons/go";
 
 const SidebarComponent = ({ setSidebarCollapsed }) => {
   const { pathname } = useLocation();
@@ -66,6 +67,17 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
           >
             <MdAccountBalance className="inline-block mr-2" />
             {!isCollapsed && "Accounts"}
+          </NavLink>
+          <NavLink
+            to="/goals"
+            className={() =>
+              pathname === "/goals"
+                ? "text-blue-600 sidebar-items"
+                : "text-gray-700 sidebar-items"
+            }
+          >
+            <GoGoal className="inline-block mr-2" />
+            {!isCollapsed && "Goals"}
           </NavLink>
           <NavLink
             to="/profile"
