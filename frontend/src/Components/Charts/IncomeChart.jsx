@@ -3,9 +3,15 @@ import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
-const IncomeChart = () => {
+const IncomeChart = ({ dashSummary }) => {
+  console.log(dashSummary);
+  let trend = dashSummary.financial_overview.map((o) => ({
+    month: o.month.split(" ")[0],
+    income: o.income,
+  }));
+  trend = [...trend].reverse();
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: trend.month,
     datasets: [
       {
         label: "Income",
@@ -26,7 +32,7 @@ const IncomeChart = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [65, 59, 80, 81, 56, 55, 40],
+        data: trend.income,
       },
     ],
   };

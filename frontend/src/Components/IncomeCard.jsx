@@ -71,6 +71,7 @@ export default function ExpenseCard({ toggleIncomeCard }) {
       toast.success("Income added successfully");
       toggleIncomeCard();
     } catch (e) {
+      console.log(e);
       if (e.response && e.response.data.message) {
         toast.error(e.response.data.message);
       } else {
@@ -82,13 +83,13 @@ export default function ExpenseCard({ toggleIncomeCard }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="absolute inset-0 bg-black opacity-50"
         onClick={toggleIncomeCard}
       ></div>
-      <div className="relative w-96 p-6 bg-white shadow-lg rounded">
-        <h2 className="text-xl font-bold mb-4">Add Income</h2>
+      <div className="relative p-6 bg-white rounded shadow-lg w-96">
+        <h2 className="mb-4 text-xl font-bold">Add Income</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Amount</label>
@@ -143,14 +144,14 @@ export default function ExpenseCard({ toggleIncomeCard }) {
           </div>
           <button
             type="button"
-            className="px-4 py-2 bg-red-500 text-white rounded"
+            className="px-4 py-2 text-white bg-red-500 rounded"
             onClick={toggleIncomeCard}
           >
             Close
           </button>
           <button
             type="submit"
-            className="ml-2 px-4 py-2 bg-green-500 text-white rounded"
+            className="px-4 py-2 ml-2 text-white bg-green-500 rounded"
             disabled={loading}
           >
             {loading ? "Adding..." : "Add"}

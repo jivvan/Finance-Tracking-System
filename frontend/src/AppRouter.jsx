@@ -14,7 +14,7 @@ import Transactions from "./Pages/Transactions";
 
 function AppRouter() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   useEffect(() => {
     setIsAuthenticated(localStorage.getItem("token") !== null);
   }, []);

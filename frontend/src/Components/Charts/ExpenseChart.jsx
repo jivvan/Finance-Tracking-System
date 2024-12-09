@@ -3,12 +3,13 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
-const ExpenseChart = () => {
+const ExpenseChart = ({ dashSummary }) => {
+  const breakdown = dashSummary.expense_breakdown;
   const data = {
-    labels: ["Housing", "Food", "Transportation", "Entertainment", "Other"],
+    labels: Object.keys(breakdown),
     datasets: [
       {
-        data: [300, 50, 100, 200, 150],
+        data: Object.values(breakdown),
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
