@@ -23,8 +23,10 @@ const Dashboard = () => {
   const dashSummary = useStore((state) => state.dashSummary);
   const setDashSummary = useStore((state) => state.setDashSummary);
 
-  async function fetchSummary() {
-    setFetching(true);
+  async function fetchSummary(show_loading = false) {
+    if (show_loading) {
+      setFetching(true);
+    }
     try {
       const token = localStorage.getItem("token");
       let url = import.meta.env.VITE_API_URL + "/dashboard";
@@ -36,13 +38,14 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
       setDashSummary(response.data);
       setTried(true);
     } catch (e) {
       toast.error("Failed to fetch data");
     } finally {
-      setFetching(false);
+      if (show_loading) {
+        setFetching(false);
+      }
     }
   }
 
@@ -79,7 +82,7 @@ const Dashboard = () => {
           </div>
           <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-2">
             <SavingGoals />
-            <SpendingLimits />
+            <SpendingLimits dashSummary={dashSummary} />
           </div>
           <div className="mt-4">
             <FinanceCalendar dashSummary={dashSummary} />

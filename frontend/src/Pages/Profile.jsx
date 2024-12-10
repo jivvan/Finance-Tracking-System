@@ -1,27 +1,9 @@
-import { useEffect, useState } from "react";
 import { Avatar, Badge, Button, Card } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
-import axios from "axios";
+import { useStore } from "../lib/utils";
 
 const Profile = () => {
-  const [profileDetails, setProfileDetails] = useState({});
-
-  useEffect(() => {
-    async function getProfileDetails() {
-      const response = await axios.get(
-        import.meta.env.VITE_API_URL + "/auth/profile",
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      if (response.data.user_details) {
-        setProfileDetails(response.data.user_details);
-      }
-    }
-    getProfileDetails();
-  }, []);
+  const profileDetails = useStore((state) => state.profile);
 
   return (
     <main className="p-4">

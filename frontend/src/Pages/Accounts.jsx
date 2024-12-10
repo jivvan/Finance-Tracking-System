@@ -1,31 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Label, Select, TextInput } from "flowbite-react";
-import axios from "axios";
 import QuickCreate from "../Components/QuickCreate";
+import { useStore } from "../lib/utils";
 
 function Accounts() {
-  const [cardsData, setCardsData] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          import.meta.env.VITE_API_URL + "/api/accounts",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCardsData(response.data);
-      } catch (error) {
-        console.error("There was an error fetching the data!", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const accounts = useStore((state) => state.accounts);
 
   return (
     <>
@@ -54,7 +33,7 @@ function Accounts() {
           </div>
 
           <div className="flex flex-wrap justify-start gap-8 mt-8">
-            {cardsData.map((card, index) => (
+            {accounts.map((account, index) => (
               <Card
                 key={index}
                 className="flex flex-col items-center justify-center max-w-sm"
@@ -67,10 +46,10 @@ function Accounts() {
                   />
                 </div>
                 <h5 className="text-2xl font-bold tracking-tight text-center text-gray-900 dark:text-white">
-                  {card.name}
+                  {account.name}
                 </h5>
                 <p className="font-normal text-center text-gray-700 dark:text-gray-400">
-                  Balance: {card.balance}
+                  Balance: {account.balance}
                 </p>
                 <Button
                   color="blue"
