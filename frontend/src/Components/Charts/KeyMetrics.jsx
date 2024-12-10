@@ -2,45 +2,33 @@ import React from "react";
 import { Card } from "flowbite-react";
 import { GiReceiveMoney, GiPayMoney, GiWallet } from "react-icons/gi";
 
-const KeyNumericMetrics = () => {
+const KeyNumericMetrics = ({ dashSummary }) => {
   const currentMetrics = {
-    currentBalance: 10000.0,
-    monthlyExpense: 2500.0,
-    monthlyIncome: 5000.0,
-  };
-
-  const previousMetrics = {
-    currentBalance: 9500.0,
-    monthlyExpense: 2300.0,
-    monthlyIncome: 4500.0,
+    currentBalance: dashSummary.current_balance,
+    monthlyExpense: dashSummary.past_30_day_expense,
+    monthlyIncome: dashSummary.past_30_day_income,
   };
 
   const metrics = [
     {
       label: "Current Balance",
       current: currentMetrics.currentBalance,
-      previous: previousMetrics.currentBalance,
     },
     {
       label: "Past 30 day Expense",
       current: currentMetrics.monthlyExpense,
-      previous: previousMetrics.monthlyExpense,
     },
     {
       label: "Past 30 day Income",
       current: currentMetrics.monthlyIncome,
-      previous: previousMetrics.monthlyIncome,
     },
   ];
 
-  const formatValue = (value) => {
-    return `$${value.toFixed(2)}`;
-  };
-
-  const getDifference = (current, previous) => {
-    const diff = current - previous;
-    const sign = diff > 0 ? "+" : "";
-    return `${sign}${formatValue(diff)}`;
+  const formatValue = (value, label) => {
+    if (label === "Past 30 day Expense") {
+      return `Rs. ${-value.toFixed(2)}`;
+    }
+    return `Rs. ${value.toFixed(2)}`;
   };
 
   function renderSwitch(param) {
@@ -66,16 +54,7 @@ const KeyNumericMetrics = () => {
           </div>
           <div className="mt-2">
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {formatValue(metric.current)}
-            </p>
-            <p
-              className={`text-sm ${
-                metric.current >= metric.previous
-                  ? "text-green-500"
-                  : "text-red-500"
-              }`}
-            >
-              {getDifference(metric.current, metric.previous)}
+              {formatValue(metric.current, metric.label)}
             </p>
           </div>
         </Card>

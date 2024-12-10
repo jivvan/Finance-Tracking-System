@@ -42,6 +42,9 @@ def create_app(mode='development'):
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
+    from .routes import dashboard as dashboard_blueprint
+    app.register_blueprint(dashboard_blueprint, url_prefix='/dashboard')
+
     from .routes.accounts import accounts as accounts_blueprint
     app.register_blueprint(accounts_blueprint, url_prefix='/api/accounts')
 

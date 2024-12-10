@@ -6,8 +6,7 @@ import { MdAccountBalance } from "react-icons/md";
 
 const SidebarComponent = ({ setSidebarCollapsed }) => {
   const { pathname } = useLocation();
-  console.log(pathname);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../Components/Sidebar";
 import QuickCreate from "../Components/QuickCreate";
 import { Label, Select, TextInput, Card } from "flowbite-react";
 import axios from "axios";
+import { useStore } from "../lib/utils";
 
 function Transactions() {
-  const [transactions, setTransactions] = useState([]);
+  const transactions = useStore((state) => state.transactions);
+  const setTransactions = useStore((state) => state.setTransactions);
+
+  const [tried, setTried] = useState(false);
+  //   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const token = localStorage.getItem("token"); // Assume you need a token for authorization
+        const token = localStorage.getItem("token");
         const response = await axios.get(
           import.meta.env.VITE_API_URL + "/api/transactions",
           {
@@ -25,7 +29,10 @@ function Transactions() {
       }
     };
 
-    fetchTransactions();
+    if (transactions.length === 0 && !tried) {
+      fetchTransactions();
+      setTried(true);
+    }
   }, []);
 
   return (

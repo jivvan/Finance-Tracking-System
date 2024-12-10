@@ -2,13 +2,8 @@ import React from "react";
 import { Table } from "flowbite-react";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 
-const RecentTransactions = () => {
-  const transactions = [
-    { date: "2023-10-01", description: "Groceries", amount: -50.0 },
-    { date: "2023-10-02", description: "Salary", amount: 2000.0 },
-    { date: "2023-10-03", description: "Rent", amount: -800.0 },
-    { date: "2023-10-04", description: "Utilities", amount: -100.0 },
-  ];
+const RecentTransactions = ({ dashSummary }) => {
+  const transactions = dashSummary.recent_transactions;
 
   const formatAmount = (amount) => {
     const isPositive = amount > 0;
@@ -23,7 +18,7 @@ const RecentTransactions = () => {
         ) : (
           <FaArrowDown className="w-5 h-5" />
         )}
-        <span>{`$${Math.abs(amount).toFixed(2)}`}</span>
+        <span>{`Rs. ${Math.abs(amount).toFixed(2)}`}</span>
       </span>
     );
   };
@@ -37,6 +32,7 @@ const RecentTransactions = () => {
         <Table.Head>
           <Table.HeadCell className="text-gray-600">Date</Table.HeadCell>
           <Table.HeadCell className="text-gray-600">Description</Table.HeadCell>
+          {/* <Table.HeadCell className="text-gray-600">Category</Table.HeadCell> */}
           <Table.HeadCell className="text-gray-600">Amount</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
@@ -51,6 +47,9 @@ const RecentTransactions = () => {
               <Table.Cell className="text-gray-700 dark:text-gray-300">
                 {transaction.description}
               </Table.Cell>
+              {/* <Table.Cell className="text-gray-700 dark:text-gray-300">
+                {transaction.category_id}
+              </Table.Cell> */}
               <Table.Cell>{formatAmount(transaction.amount)}</Table.Cell>
             </Table.Row>
           ))}

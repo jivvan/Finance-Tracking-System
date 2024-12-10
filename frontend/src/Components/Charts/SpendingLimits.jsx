@@ -1,23 +1,27 @@
 import React from "react";
 import { Card, Progress } from "flowbite-react";
-import { getColorPerProgress } from "../../lib/utils";
+import { getColorPerProgress, useStore } from "../../lib/utils";
 
-const SpendingLimits = () => {
-  const limits = [
-    { category: "Groceries", limit: 500, spent: 450 },
-    { category: "Entertainment", limit: 300, spent: 200 },
-    { category: "Utilities", limit: 200, spent: 180 },
-  ];
-
+const SpendingLimits = ({ dashSummary }) => {
+  const breakdown = dashSummary.expense_breakdown;
+  const categories = useStore((state) => state.categories);
+  const setCategories = categories.filter(
+    (c) => c.category_type === "expense" && c.limit > 0
+  );
+  const limits = setCategories.map((cat) => ({
+    name: cat.name,
+    limit: cat.limit,
+    spent: -breakdown[cat.name] || 0,
+  }));
   return (
     <Card className="p-4">
       <h2 className="mb-4 text-lg font-semibold">Spending Limits</h2>
       {limits.map((limit, index) => (
         <div key={index} className="mb-4">
           <div className="flex justify-between mb-2">
-            <span>{limit.category}</span>
+            <span>{limit.name}</span>
             <span>
-              ${limit.spent.toFixed(2)} / ${limit.limit.toFixed(2)}
+              Rs. {limit.spent.toFixed(2)} / Rs. {limit.limit.toFixed(2)}
             </span>
           </div>
           <Progress
