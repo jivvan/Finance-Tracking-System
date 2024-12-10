@@ -16,12 +16,15 @@ import { useStore } from "../lib/utils";
 
 const Dashboard = () => {
   const [currentAccount, setCurrentAccount] = useState("All accounts");
+  const [fetching, setFetching] = useState(false);
+  const [tried, setTried] = useState(false);
   const accountOptions = ["All accounts", "Cash"];
 
   const dashSummary = useStore((state) => state.dashSummary);
   const setDashSummary = useStore((state) => state.setDashSummary);
 
   async function fetchSummary() {
+    setFetching(true);
     try {
       const token = localStorage.getItem("token");
       let url = import.meta.env.VITE_API_URL + "/dashboard";
@@ -33,25 +36,31 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log(response.data);
       setDashSummary(response.data);
+      setTried(true);
     } catch (e) {
       toast.error("Failed to fetch data");
+    } finally {
+      setFetching(false);
     }
   }
 
   useEffect(() => {
-    fetchSummary();
+    if (Object.keys(dashSummary).length == 0 && !tried) {
+      fetchSummary();
+    }
   }, []);
 
   return (
     <>
-      {dashSummary.current_balance ? (
+      {Object.keys(dashSummary).length !== 0 && !fetching ? (
         <main className="p-4">
-          <QuickCreate />
+          <QuickCreate refreshFn={fetchSummary} />
           <div className="flex flex-col mb-4 w-max">
             <Select id="countries" required>
               {accountOptions.map((acc) => {
-                return <option>{acc}</option>;
+                return <option key={acc}>{acc}</option>;
               })}
             </Select>
           </div>
@@ -62,18 +71,18 @@ const Dashboard = () => {
             <IncomeChart dashSummary={dashSummary} />
           </div>
           <div className="mt-4">
-            <RecentTransactions />
+            <RecentTransactions dashSummary={dashSummary} />
           </div>
           <hr className="mt-4 border border-gray-300 rounded-lg" />
           <div className="mt-4">
-            <ExpensePrediction />
+            <ExpensePrediction dashSummary={dashSummary} />
           </div>
           <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-2">
             <SavingGoals />
             <SpendingLimits />
           </div>
           <div className="mt-4">
-            <FinanceCalendar />
+            <FinanceCalendar dashSummary={dashSummary} />
           </div>
         </main>
       ) : (

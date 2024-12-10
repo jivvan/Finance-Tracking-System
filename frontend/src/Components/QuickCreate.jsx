@@ -6,7 +6,7 @@ import AccountCard from "../Components/AccountCard";
 import ExpenseCard from "../Components/ExpenseCard";
 import IncomeCard from "../Components/IncomeCard";
 
-export default function QuickCreate() {
+export default function QuickCreate({ refreshFn }) {
   const [isExpenseCardVisible, setIsExpenseCardVisible] = useState(false);
   const [isIncomeCardVisible, setIsIncomeCardVisible] = useState(false);
   const [isAccountCardVisible, setIsAccountCardVisible] = useState(false);
@@ -22,6 +22,10 @@ export default function QuickCreate() {
   const toggleAccountCard = () => {
     setIsAccountCardVisible(!isAccountCardVisible);
   };
+
+  if (refreshFn === null) {
+    refreshFn = function () {};
+  }
   return (
     <div className="flex flex-wrap justify-center gap-2 p-4">
       <Button.Group>
@@ -48,10 +52,13 @@ export default function QuickCreate() {
         </Button>
       </Button.Group>
       {isExpenseCardVisible && (
-        <ExpenseCard toggleExpenseCard={toggleExpenseCard} />
+        <ExpenseCard
+          refreshFn={refreshFn}
+          toggleExpenseCard={toggleExpenseCard}
+        />
       )}
       {isIncomeCardVisible && (
-        <IncomeCard toggleIncomeCard={toggleIncomeCard} />
+        <IncomeCard refreshFn={refreshFn} toggleIncomeCard={toggleIncomeCard} />
       )}
       {isAccountCardVisible && (
         <AccountCard toggleAccountCard={toggleAccountCard} />

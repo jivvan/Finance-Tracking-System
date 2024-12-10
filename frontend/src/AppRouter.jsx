@@ -19,7 +19,7 @@ function AppRouter() {
     setIsAuthenticated(localStorage.getItem("token") !== null);
   }, []);
   const path = window.location.pathname;
-  const dashView = !["/", "/login", "/signup"].includes(path);
+  const dashView = !["/home", "/login", "/signup"].includes(path);
   return (
     <Router>
       {dashView && <Sidebar setSidebarCollapsed={setSidebarCollapsed} />}
@@ -36,16 +36,17 @@ function AppRouter() {
         }
       >
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<ProtectedRoute element={Dashboard} />} />
+          <Route
+            path="/dashboard"
+            element={<ProtectedRoute element={Dashboard} />}
+          />
           <Route
             path="/login"
             element={<Login setIsAuthenticated={setIsAuthenticated} />}
           />
           <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/dashboard"
-            element={<ProtectedRoute element={Dashboard} />}
-          />
+          <Route path="/home" element={<Home />} />
           <Route
             path="/profile"
             element={<ProtectedRoute element={Profile} />}

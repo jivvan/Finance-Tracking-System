@@ -1,11 +1,9 @@
 import pandas as pd
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity
-from datetime import timedelta, datetime
-from ..utils import jwt_required_user_exists, arima_predict
+from ..utils import jwt_required_user_exists
 from ..models import db, User, Account, Transaction, Category
 from ..schemas import TransactionCreateSchema, TransactionUpdateSchema, PredictionSchema
-from sqlalchemy import func
 
 transactions = Blueprint('transactions', __name__)
 
@@ -156,69 +154,3 @@ def delete_transaction(transaction_id):
     db.session.commit()
 
     return jsonify({'message': 'Transaction deleted successfully'}), 200
-
-
-@transactions.route('/predict', methods=['POST'])
-@jwt_required_user_exists
-def predict_spending():
-    user_id = get_jwt_identity()
-    schema = PredictionSchema()
-    errors = schema.validate(request.json)
-    if errors:
-        return jsonify(errors), 400
-
-    data = schema.load(request.json)
-    category_id = data.get('category_id')
-    num_periods = data.get('num_periods', 1)
-    lookback = data.get('lookback', 30)
-
-    accounts = Account.query.filter_by(user_id=user_id).all()
-    account_ids = [account.id for account in accounts]
-
-    duration_end = datetime.today()
-    duration_begin = duration_end - timedelta(days=lookback)
-
-    if category_id:
-        transactions = db.session.query(
-            func.date(Transaction.date).label('date'),
-            func.sum(Transaction.amount).label('amount')
-        ).filter(
-            Transaction.account_id.in_(account_ids),
-            Transaction.category_id == category_id,
-            Transaction.date >= duration_begin,
-            Transaction.date <= duration_end
-        ).group_by(
-            func.date(Transaction.date)
-        ).all()
-    else:
-        categories = Category.query.filter_by(user_id=user_id).all()
-        expense_categories = [
-            cat.id for cat in categories if cat.category_type == 'expense']
-        # transactions = Transaction.query.filter(
-        #     Transaction.account_id.in_(account_ids),
-        #     Transaction.category_id.in_(expense_categories),
-        #     Transaction.date >= duration_begin,
-        #     Transaction.date <= duration_end
-        # ).order_by(Transaction.date.desc()).all()
-        transactions = db.session.query(
-            func.date(Transaction.date).label('date'),
-            func.sum(Transaction.amount).label('amount')
-        ).filter(
-            Transaction.account_id.in_(account_ids),
-            Transaction.category_id.in_(expense_categories),
-            Transaction.date >= duration_begin,
-            Transaction.date <= duration_end
-        ).group_by(
-            func.date(Transaction.date)
-        ).all()
-
-    if not transactions:
-        return jsonify({'message': 'No transactions found for the specified category'}), 404
-    if len(transactions) <= 1:
-        return jsonify({'message': f'Not enough transactions to make forecast: {len(transactions)}'}), 400
-
-    expenses = [{'date': t.date, 'amount': t.amount} for t in transactions]
-    return jsonify({
-        'historical': {item["date"].strftime("%Y-%m-%d"): item["amount"] for item in expenses},
-        'forecast': arima_predict(expenses, num_periods)
-    })

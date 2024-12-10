@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function ExpenseCard({ toggleIncomeCard }) {
+export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -34,7 +34,11 @@ export default function ExpenseCard({ toggleIncomeCard }) {
             },
           }
         );
-        setCategories(categoriesResponse.data);
+        setCategories(
+          categoriesResponse.data.filter(
+            (cat) => cat.category_type === "income"
+          )
+        );
       } catch (e) {
         toast.error("Failed to fetch data");
       }
@@ -69,6 +73,7 @@ export default function ExpenseCard({ toggleIncomeCard }) {
         }
       );
       toast.success("Income added successfully");
+      refreshFn();
       toggleIncomeCard();
     } catch (e) {
       console.log(e);

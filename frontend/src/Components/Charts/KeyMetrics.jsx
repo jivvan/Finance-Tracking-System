@@ -24,7 +24,10 @@ const KeyNumericMetrics = ({ dashSummary }) => {
     },
   ];
 
-  const formatValue = (value) => {
+  const formatValue = (value, label) => {
+    if (label === "Past 30 day Expense") {
+      return `Rs. ${-value.toFixed(2)}`;
+    }
     return `Rs. ${value.toFixed(2)}`;
   };
 
@@ -51,7 +54,7 @@ const KeyNumericMetrics = ({ dashSummary }) => {
           </div>
           <div className="mt-2">
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {formatValue(metric.current)}
+              {formatValue(metric.current, metric.label)}
             </p>
           </div>
         </Card>

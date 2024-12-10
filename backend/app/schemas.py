@@ -1,5 +1,20 @@
 from marshmallow import Schema, fields, validate
 
+class TransactionSchema(Schema):
+    id = fields.Integer()
+    amount = fields.Float()
+    description = fields.String()
+    account_id = fields.Integer()
+    date = fields.Date()
+    category_id = fields.Integer()
+
+class AccountSchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+    balance = fields.Float()
+    user_id = fields.Integer()
+    transactions = fields.Nested(TransactionSchema, many=True)
+
 
 class UserRegisterSchema(Schema):
     username = fields.Str(

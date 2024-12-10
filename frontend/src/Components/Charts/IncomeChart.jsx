@@ -4,14 +4,13 @@ import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
 const IncomeChart = ({ dashSummary }) => {
-  console.log(dashSummary);
   let trend = dashSummary.financial_overview.map((o) => ({
     month: o.month.split(" ")[0],
     income: o.income,
   }));
   trend = [...trend].reverse();
   const data = {
-    labels: trend.month,
+    labels: trend.map((t) => t.month),
     datasets: [
       {
         label: "Income",
@@ -32,7 +31,7 @@ const IncomeChart = ({ dashSummary }) => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: trend.income,
+        data: trend.map((t) => t.income),
       },
     ],
   };
