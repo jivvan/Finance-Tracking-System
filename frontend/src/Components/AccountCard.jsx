@@ -22,6 +22,7 @@ export default function AccountCard({ toggleAccountCard }) {
           },
         }
       );
+      console.log(respnse);
       toast("Account created successfully");
     } catch (e) {
       if (e.response.data.message) {

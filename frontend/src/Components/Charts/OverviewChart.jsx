@@ -3,9 +3,11 @@ import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
-const OverviewChart = () => {
+const OverviewChart = ({ dashSummary }) => {
+  let overview = dashSummary.financial_overview;
+  overview = [...overview].reverse();
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: overview.map((o) => o.month.split(" ")[0]),
     datasets: [
       {
         label: "Income",
@@ -14,7 +16,7 @@ const OverviewChart = () => {
         borderWidth: 1,
         hoverBackgroundColor: "rgba(75,192,192,0.6)",
         hoverBorderColor: "rgba(75,192,192,1)",
-        data: [65, 59, 80, 81, 56, 55, 40],
+        data: overview.map((o) => o.income),
       },
       {
         label: "Expenses",
@@ -23,7 +25,7 @@ const OverviewChart = () => {
         borderWidth: 1,
         hoverBackgroundColor: "rgba(255,99,132,0.6)",
         hoverBorderColor: "rgba(255,99,132,1)",
-        data: [45, 79, 50, 61, 86, 35, 60],
+        data: overview.map((o) => -o.expense),
       },
     ],
   };

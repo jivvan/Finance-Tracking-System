@@ -1,29 +1,14 @@
 import React, { useState } from "react";
 import { Card } from "flowbite-react";
 
-const FinanceCalendar = () => {
+const FinanceCalendar = ({ dashSummary }) => {
+  const calendarData = dashSummary.calendar.map((data) => ({
+    ...data,
+    date: new Date(data.date),
+  }));
   const today = new Date();
   const startDate = new Date();
   startDate.setMonth(today.getMonth() - 3);
-
-  const generateCalendarData = () => {
-    const data = [];
-    const currentDate = new Date(startDate);
-
-    while (currentDate <= today) {
-      data.push({
-        date: new Date(currentDate),
-        income: Math.floor(Math.random() * 1000), // Mock income data
-        expense: Math.floor(Math.random() * 1000), // Mock expense data
-        balance: Math.floor(Math.random() * 1000), // Mock balance data
-      });
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return data;
-  };
-
-  const calendarData = generateCalendarData();
 
   const getMonthName = (month) => {
     const monthNames = [
@@ -102,13 +87,13 @@ const FinanceCalendar = () => {
           {entry ? (
             <>
               <div className="text-xs text-green-500">
-                Income: ${entry.income}
+                Income: Rs. {entry.income}
               </div>
               <div className="text-xs text-red-500">
-                Expense: ${entry.expense}
+                Expense: Rs. {-entry.expense}
               </div>
               <div className="text-xs text-blue-500">
-                Balance: ${entry.balance}
+                Balance: Rs. {entry.balance}
               </div>
             </>
           ) : (

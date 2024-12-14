@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function ExpenseCard({ toggleExpenseCard }) {
+export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -34,7 +34,9 @@ export default function ExpenseCard({ toggleExpenseCard }) {
             },
           }
         );
-        setCategories(categoriesResponse.data);
+        setCategories(
+          categoriesResponse.data.filter((c) => c.category_type === "expense")
+        );
       } catch (e) {
         toast.error("Failed to fetch data");
       }
@@ -54,11 +56,12 @@ export default function ExpenseCard({ toggleExpenseCard }) {
     setLoading(true);
 
     try {
+      console.log(selectedAccount);
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/api/transactions",
         {
-          account_id: selectedAccount, // Send selected account ID
-          amount:amount * -1,
+          account_id: parseInt(selectedAccount), // Send selected account ID
+          amount: amount * -1,
           description,
           category_id: selectedCategory, // Send selected category ID
         },
@@ -69,6 +72,7 @@ export default function ExpenseCard({ toggleExpenseCard }) {
         }
       );
       toast.success("Expense added successfully");
+      refreshFn();
       toggleExpenseCard();
     } catch (e) {
       if (e.response && e.response.data.message) {
@@ -82,13 +86,13 @@ export default function ExpenseCard({ toggleExpenseCard }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="absolute inset-0 bg-black opacity-50"
         onClick={toggleExpenseCard}
       ></div>
-      <div className="relative w-96 p-6 bg-white shadow-lg rounded">
-        <h2 className="text-xl font-bold mb-4">Add Expense</h2>
+      <div className="relative p-6 bg-white rounded shadow-lg w-96">
+        <h2 className="mb-4 text-xl font-bold">Add Expense</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Amount</label>
@@ -143,14 +147,14 @@ export default function ExpenseCard({ toggleExpenseCard }) {
           </div>
           <button
             type="button"
-            className="px-4 py-2 bg-red-500 text-white rounded"
+            className="px-4 py-2 text-white bg-red-500 rounded"
             onClick={toggleExpenseCard}
           >
             Close
           </button>
           <button
             type="submit"
-            className="ml-2 px-4 py-2 bg-green-500 text-white rounded"
+            className="px-4 py-2 ml-2 text-white bg-green-500 rounded"
             disabled={loading}
           >
             {loading ? "Adding..." : "Add"}

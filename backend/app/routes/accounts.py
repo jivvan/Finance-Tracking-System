@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from ..utils import jwt_required_user_exists
 from ..models import db, Account
-from ..schemas import AccountCreateSchema, AccountUpdateSchema
+from ..schemas import AccountCreateSchema, AccountUpdateSchema, AccountSchema
 
 accounts = Blueprint('accounts', __name__)
 
@@ -19,7 +19,7 @@ def get_account_or_404(account_id, user_id):
 def get_accounts():
     user_id = get_jwt_identity()
     accounts = Account.query.filter_by(user_id=user_id).all()
-    return jsonify([{'name': account.name, 'balance': account.balance} for account in accounts]), 200
+    return jsonify([AccountSchema().dump(account) for account in accounts]), 200
 
 
 @accounts.route('/', methods=['POST'])
@@ -43,7 +43,13 @@ def create_account():
     db.session.add(new_account)
     db.session.commit()
 
-    return jsonify({'message': 'Account created successfully'}), 201
+    # Serialize the newly created account
+    serialized_account = AccountSchema().dump(new_account)
+
+    return jsonify({
+        'message': 'Account created successfully',
+        'account': serialized_account
+    }), 201
 
 
 @accounts.route('/<int:account_id>', methods=['PUT'])

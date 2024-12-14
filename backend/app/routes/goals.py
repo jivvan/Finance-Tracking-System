@@ -19,7 +19,7 @@ def get_goal_or_404(goal_id, user_id):
 def get_goals():
     user_id = get_jwt_identity()
     goals = Goal.query.filter_by(user_id=user_id).all()
-    return jsonify([{'name': g.name, 'target_amount': g.target_amount, 'current_amount': g.current_amount} for g in goals]), 200
+    return jsonify([{'id': g.id,'name': g.name, 'target_amount': g.target_amount, 'current_amount': g.current_amount} for g in goals]), 200
 
 
 @goals.route('/', methods=['POST'])
