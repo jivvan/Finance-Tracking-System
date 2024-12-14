@@ -9,6 +9,7 @@ import Profile from "./Pages/Profile";
 import Accounts from "./Pages/Accounts";
 import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
+import Goals from "./Pages/Goals";
 import ProtectedRoute from "./ProtectedRoute";
 import Transactions from "./Pages/Transactions";
 
@@ -58,6 +59,10 @@ function AppRouter() {
           <Route
             path="/accounts"
             element={<ProtectedRoute element={Accounts} />}
+          />
+          <Route
+            path="/goals"
+            element={<ProtectedRoute element={Goals} />}
           />
 
           {/* <Route path="/what-is-finance-tracker" element={<WhatIsFinanceTracker />} />

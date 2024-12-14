@@ -2,9 +2,12 @@ import { Button } from "flowbite-react";
 import { useState } from "react";
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { GiPayMoney, GiReceiveMoney } from "react-icons/gi";
+import { GoGoal } from "react-icons/go";
 import AccountCard from "../Components/AccountCard";
 import ExpenseCard from "../Components/ExpenseCard";
 import IncomeCard from "../Components/IncomeCard";
+import AddGoalCard from "../Components/AddGoalCard";
+
 
 export default function QuickCreate({ refreshFn }) {
   const [isExpenseCardVisible, setIsExpenseCardVisible] = useState(false);
@@ -26,6 +29,7 @@ export default function QuickCreate({ refreshFn }) {
   if (refreshFn === null) {
     refreshFn = function () {};
   }
+  
   return (
     <div className="flex flex-wrap justify-center gap-2 p-4">
       <Button.Group>
