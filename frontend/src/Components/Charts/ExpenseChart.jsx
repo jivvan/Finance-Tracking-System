@@ -30,10 +30,7 @@ const ExpenseChart = ({ dashSummary }) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-lg font-semibold">
-        Expense Breakdown
-        <p className="text-sm font-normal text-gray-500">Last 30 days</p>
-      </h2>
+      <h2 className="mb-4 text-lg font-semibold">Expense Breakdown</h2>
       <Doughnut data={data} />
     </div>
   );

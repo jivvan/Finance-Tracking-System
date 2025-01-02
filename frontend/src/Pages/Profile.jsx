@@ -1,9 +1,16 @@
 import { Avatar, Badge, Button, Card } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
 import { useStore } from "../lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const profileDetails = useStore((state) => state.profile);
+  const navigate = useNavigate();
+
+  const signOut = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <main className="p-4">
@@ -24,7 +31,7 @@ const Profile = () => {
             <Button color="info" size="sm" outline>
               Change Password
             </Button>
-            <Button color="failure" size="sm">
+            <Button onClick={signOut} color="failure" size="sm">
               Sign Out
             </Button>
           </div>

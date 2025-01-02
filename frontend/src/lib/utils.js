@@ -31,6 +31,9 @@ export const useStore = create((set) => ({
   goals: [],
   addGoal: (goal) => set((state) => ({ goals: [goal, ...state.goals] })),
   setGoals: (goals) => set((state) => ({ goals })),
+
+  rehydrateFlag: false,
+  rehydrate: () => set((state) => ({ rehydrateFlag: !state.rehydrateFlag })),
 }));
 
 export function getColorPerProgress(progress, lower_better = false) {

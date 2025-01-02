@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast} from "react-toastify";
-
+import { toast } from "react-toastify";
 
 function Signup() {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,22 +18,26 @@ function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     // Password validation
     if (password.length < 8) {
       toast.error("Password must be at least 8 characters long.");
+      setLoading(false);
       return;
     }
 
     // Username validation
     if (username.length < 4) {
       toast.error("Username must be at least 4 characters long.");
+      setLoading(false);
       return;
     }
 
     // Confirm password validation
     if (password !== confirmPassword) {
       toast.error("Passwords do not match!");
+      setLoading(false);
       return;
     }
 
@@ -65,14 +69,18 @@ function Signup() {
           );
         }
       } else if (error.request) {
-        toast.error("No response received from the server. Please try again later.");
+        toast.error(
+          "No response received from the server. Please try again later."
+        );
       } else {
-        toast.error("An error occurred while setting up the request. Please try again.");
+        toast.error(
+          "An error occurred while setting up the request. Please try again."
+        );
       }
+    } finally {
+      setLoading(false);
     }
   };
-
-
 
   return (
     <section className="m-auto dark:bg-gray-900 py-14">
@@ -219,6 +227,8 @@ function Signup() {
                   </a>
                 </div> */}
                 <Button
+                  disabled={loading}
+                  isProcessing={loading}
                   type="submit"
                   className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >

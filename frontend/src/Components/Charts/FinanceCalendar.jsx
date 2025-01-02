@@ -92,9 +92,9 @@ const FinanceCalendar = ({ dashSummary }) => {
               <div className="text-xs text-red-500">
                 Expense: Rs. {-entry.expense}
               </div>
-              <div className="text-xs text-blue-500">
+              {/* <div className="text-xs text-blue-500">
                 Balance: Rs. {entry.balance}
-              </div>
+              </div> */}
             </>
           ) : (
             <div className="text-xs text-gray-500">No data</div>
