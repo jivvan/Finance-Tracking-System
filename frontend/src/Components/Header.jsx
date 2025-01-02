@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 import React, { useState } from "react";
 import { Navbar, Button } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
