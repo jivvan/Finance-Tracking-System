@@ -18,7 +18,7 @@ def get_account_or_404(account_id, user_id):
 @jwt_required_user_exists
 def get_accounts():
     user_id = get_jwt_identity()
-    accounts = Account.query.filter_by(user_id=user_id).all()
+    accounts = Account.query.filter_by(user_id=user_id).order_by(Account.name).all()
     return jsonify([AccountSchema().dump(account) for account in accounts]), 200
 
 

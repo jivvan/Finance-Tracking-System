@@ -92,9 +92,9 @@ const FinanceCalendar = ({ dashSummary }) => {
               <div className="text-xs text-red-500">
                 Expense: Rs. {-entry.expense}
               </div>
-              <div className="text-xs text-blue-500">
+              {/* <div className="text-xs text-blue-500">
                 Balance: Rs. {entry.balance}
-              </div>
+              </div> */}
             </>
           ) : (
             <div className="text-xs text-gray-500">No data</div>
@@ -136,8 +136,7 @@ const FinanceCalendar = ({ dashSummary }) => {
       {renderCalendar()}
       <p className="font-light text-md">
         <span className="text-green-500">Income</span> |{" "}
-        <span className="text-red-500">Expense</span> |{" "}
-        <span className="text-blue-500">Balance</span>
+        <span className="text-red-500">Expense</span>
         <br />
         <span className="text-xs">*Only past 90 days data is considered</span>
       </p>

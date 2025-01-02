@@ -1,6 +1,6 @@
 import React from "react";
 import { Table } from "flowbite-react";
-import { FaArrowDown, FaArrowUp } from "react-icons/fa";
+import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 
 const RecentTransactions = ({ dashSummary }) => {
   const transactions = dashSummary.recent_transactions;
@@ -14,9 +14,9 @@ const RecentTransactions = ({ dashSummary }) => {
         }`}
       >
         {isPositive ? (
-          <FaArrowUp className="w-5 h-5" />
+          <GiReceiveMoney className="w-5 h-5" />
         ) : (
-          <FaArrowDown className="w-5 h-5" />
+          <GiPayMoney className="w-5 h-5" />
         )}
         <span>{`Rs. ${Math.abs(amount).toFixed(2)}`}</span>
       </span>
@@ -55,6 +55,9 @@ const RecentTransactions = ({ dashSummary }) => {
           ))}
         </Table.Body>
       </Table>
+      {transactions.length === 0 && (
+        <p>Create income/expense transactions to see them here</p>
+      )}
     </div>
   );
 };

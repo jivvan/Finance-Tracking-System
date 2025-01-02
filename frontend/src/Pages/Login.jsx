@@ -3,17 +3,21 @@ import React, { useState } from "react";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useStore } from "../lib/utils";
 import axios from "axios";
 
 function Login({ setIsAuthenticated }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const rehydrate = useStore((state) => state.rehydrate);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
     try {
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/auth/login",
@@ -24,9 +28,10 @@ function Login({ setIsAuthenticated }) {
       );
 
       if (response.status === 200) {
-        toast("Login successful!");
+        toast.success("Login successful!");
         localStorage.setItem("token", response.data.access_token);
         setIsAuthenticated(true);
+        rehydrate();
         navigate("/Dashboard");
       } else {
         toast.error("Login failed. Please check your credentials.", {});
@@ -47,6 +52,8 @@ function Login({ setIsAuthenticated }) {
           "An error occurred while setting up the request. Please try again.";
         toast.error(err);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,26 +110,24 @@ function Login({ setIsAuthenticated }) {
                     Password
                   </Label>
                   <div className="relative">
-                  <TextInput
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    id="password"
-                    placeholder=""
-                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
+                    <TextInput
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      placeholder=""
+                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button
                       type="button"
                       className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? "Hide" : "Show"}
                     </button>
-                    </div>
-
-
+                  </div>
                 </div>
                 {/* <div className="flex items-center justify-between">
                   <div className="flex items-start">
@@ -149,6 +154,8 @@ function Login({ setIsAuthenticated }) {
                   </a>
                 </div> */}
                 <Button
+                  disabled={loading}
+                  isProcessing={loading}
                   type="submit"
                   className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >

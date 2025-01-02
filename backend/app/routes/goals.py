@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from ..utils import jwt_required_user_exists
 from ..models import db, User, Goal
-from ..schemas import GoalCreateSchema, GoalUpdateSchema
+from ..schemas import GoalCreateSchema, GoalUpdateSchema, GoalSchema
 
 goals = Blueprint('goals', __name__)
 
@@ -39,7 +39,9 @@ def create_goal():
     db.session.add(new_goal)
     db.session.commit()
 
-    return jsonify({'message': 'Goal created successfully'}), 201
+    serialized_goal = GoalSchema().dump(new_goal)
+
+    return jsonify({'message': 'Goal created successfully', 'goal': serialized_goal}), 201
 
 
 @goals.route('/<int:goal_id>', methods=['PUT'])
