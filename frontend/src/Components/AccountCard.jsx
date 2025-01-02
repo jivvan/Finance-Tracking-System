@@ -22,14 +22,13 @@ export default function AccountCard({ toggleAccountCard }) {
           },
         }
       );
-      console.log(respnse);
+      console.log(response);
       toast("Account created successfully");
+      toggleAccountCard();
     } catch (e) {
       if (e.response.data.message) {
         toast(e.response.data.message);
       }
-    } finally {
-      setLoading(false);
     }
   };
   return (

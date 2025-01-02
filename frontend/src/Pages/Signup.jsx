@@ -1,8 +1,10 @@
-// src/pages/Signup.jsx
 import React, { useState } from "react";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { toast} from "react-toastify";
+
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -12,11 +14,26 @@ function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    // Password validation
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long.");
+      return;
+    }
+
+    // Username validation
+    if (username.length < 4) {
+      toast.error("Username must be at least 4 characters long.");
+      return;
+    }
+
+    // Confirm password validation
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
@@ -30,28 +47,32 @@ function Signup() {
         }
       );
 
-      if (response.status === 200) {
-        alert("Signup successful!");
-      } else if (response.status === 201) {
-        alert("Signup successful!");
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Signup successful!");
+        navigate("/login"); // Redirect to the login page
       } else {
-        alert("Signup failed. Please check your credentials.");
+        toast.error("Signup failed. Please check your credentials.");
       }
     } catch (error) {
       console.error("There was an error!", error);
       if (error.response) {
-        alert(
-          `Signup failed: ${error.response.data.message || "Unknown error"}`
-        );
+        // Handle email validation error from the API
+        if (error.response.data.email) {
+          toast.error(error.response.data.email[0]); // Display email error in toaster
+        } else {
+          toast.error(
+            `Signup failed: ${error.response.data.message || "Unknown error"}`
+          );
+        }
       } else if (error.request) {
-        alert("No response received from the server. Please try again later.");
+        toast.error("No response received from the server. Please try again later.");
       } else {
-        alert(
-          "An error occurred while setting up the request. Please try again."
-        );
+        toast.error("An error occurred while setting up the request. Please try again.");
       }
     }
   };
+
+
 
   return (
     <section className="m-auto dark:bg-gray-900 py-14">
@@ -172,7 +193,7 @@ function Signup() {
                     </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                   <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <Checkbox
@@ -196,7 +217,7 @@ function Signup() {
                   >
                     Forgot password?
                   </a>
-                </div>
+                </div> */}
                 <Button
                   type="submit"
                   className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

@@ -60,10 +60,10 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/api/transactions",
         {
-          account_id: parseInt(selectedAccount), // Send selected account ID
+          account_id: parseInt(selectedAccount), 
           amount: amount * -1,
           description,
-          category_id: selectedCategory, // Send selected category ID
+          category_id: selectedCategory,
         },
         {
           headers: {

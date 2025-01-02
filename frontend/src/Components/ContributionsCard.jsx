@@ -18,7 +18,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
       setLoading(true);
 
       try {
-        // Fetch accounts from the API
+        
         const accountResponse = await axios.get(`${API_URL}/api/accounts`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -27,16 +27,16 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
         });
         setAccounts(accountResponse.data);
 
-        // Fetch contributions for the selected goal
+  
         const contributionsResponse = await axios.get(`${API_URL}/api/contributions`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          params: { goal_id: goal.id },  // Correctly passing the goal_id in the params
+          params: { goal_id: goal.id },  
         });
 
-        // Update contributions state
+        
         setContributions(contributionsResponse.data);
       } catch (error) {
         console.error("Error fetching accounts or contributions:", error);
@@ -63,20 +63,20 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
     };
 
     try {
-      // Add new contribution to the goal
+      
       const response = await axios.post(`${API_URL}/api/contributions`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // Ensure the correct Content-Type header
+          "Content-Type": "application/json", 
         },
       });
 
       if (response.status === 200) {
-        // Reset the form after successful contribution
+        
         setAmount("");
         setSelectedAccount("");
 
-        // Refresh the contributions list after adding the contribution
+        
         const updatedContributions = await axios.get(`${API_URL}/api/contributions`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { goal_id: goal.id },  // Make sure goal_id is passed correctly
@@ -101,7 +101,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
       <div className="relative p-6 bg-white rounded shadow-lg w-96">
         <h2 className="mb-4 text-xl font-bold">Contribute to Goal: {goal.name}</h2>
 
-        {/* Contribution Form */}
+        
         <div className="mb-4">
           <Label htmlFor="account">Select Account</Label>
           <Select
@@ -129,14 +129,14 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
           />
         </div>
 
-        {/* Error Message */}
+        
         {error && <div className="text-red-500">{error}</div>}
 
         <Button onClick={handleAddContribution} className="bg-green-500 text-white">
           Add Contribution
         </Button>
 
-        {/* Contributions Table */}
+        
         <div className="mt-6 overflow-x-auto">
           <Table hoverable>
             <TableHead>

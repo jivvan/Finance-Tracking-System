@@ -1,6 +1,5 @@
-// src/AppRouter.js
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
@@ -16,13 +15,17 @@ import Transactions from "./Pages/Transactions";
 function AppRouter() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   useEffect(() => {
     setIsAuthenticated(localStorage.getItem("token") !== null);
   }, []);
-  const path = window.location.pathname;
-  const dashView = !["/home", "/login", "/signup"].includes(path);
+
+  // Use useLocation to get the current path dynamically
+  const location = useLocation();
+  const dashView = !["/home", "/login", "/signup"].includes(location.pathname);
+
   return (
-    <Router>
+    <>
       {dashView && <Sidebar setSidebarCollapsed={setSidebarCollapsed} />}
       {!dashView && (
         <Header
@@ -64,16 +67,17 @@ function AppRouter() {
             path="/goals"
             element={<ProtectedRoute element={Goals} />}
           />
-
-          {/* <Route path="/what-is-finance-tracker" element={<WhatIsFinanceTracker />} />
-          <Route path="/learn" element={<Learn />} />
-          <Route path="/share" element={<Share />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/contact" element={<Contact />} /> */}
         </Routes>
       </div>
-    </Router>
+    </>
   );
 }
 
-export default AppRouter;
+// Wrap AppRouter with Router to ensure useLocation works
+export default function App() {
+  return (
+    <Router>
+      <AppRouter />
+    </Router>
+  );
+}

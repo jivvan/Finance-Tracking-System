@@ -2,17 +2,33 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, Label, Select, TextInput } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
 import { useStore } from "../lib/utils";
+import { MdAccountBalanceWallet } from "react-icons/md";
+import AccountCard from "../Components/AccountCard";
 
 function Accounts() {
   const accounts = useStore((state) => state.accounts);
+  const [showAccountCard, setShowAccountCard] = useState(false);
+  const toggleAccountCard = () => {
+    setShowAccountCard(!showAccountCard);
+  };
 
   return (
     <>
       <main className="p-4">
         <QuickCreate />
         <Card>
-          <h1 className="text-2xl font-bold">Accounts</h1>
           <div className="flex flex-wrap items-center justify-between space-x-4">
+            <h1 className="text-2xl font-bold">Accounts</h1>
+            <div>
+              <Button
+                onClick={toggleAccountCard}
+               className="bg-green-600 border border-green-500 rounded-xl hover:bg-transparent hover:text-green-300">
+                <MdAccountBalanceWallet className="w-4 h-4 mr-3" />
+                ADD ACCOUNT
+                </Button>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center justify-between space-x-4">  
             <TextInput
               id="search"
               type="text"
@@ -74,6 +90,7 @@ function Accounts() {
           </div>
         </Card>
       </main>
+      {showAccountCard && <AccountCard toggleAccountCard={toggleAccountCard} />}
     </>
   );
 }
