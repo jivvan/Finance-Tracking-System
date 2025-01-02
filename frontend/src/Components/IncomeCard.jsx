@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Button } from "flowbite-react";
 
 export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
   const [accounts, setAccounts] = useState([]);
@@ -147,20 +148,19 @@ export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
               ))}
             </select>
           </div>
-          <button
-            type="button"
-            className="px-4 py-2 text-white bg-red-500 rounded"
-            onClick={toggleIncomeCard}
-          >
-            Close
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 ml-2 text-white bg-green-500 rounded"
-            disabled={loading}
-          >
-            {loading ? "Adding..." : "Add"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <Button color="failure" type="button" onClick={toggleIncomeCard}>
+              Close
+            </Button>
+            <Button
+              color="success"
+              isProcessing={loading}
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Adding..." : "Add"}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

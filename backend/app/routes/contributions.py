@@ -11,9 +11,14 @@ contributions = Blueprint('contributions', __name__)
 @jwt_required_user_exists
 def get_contributions():
     user_id = get_jwt_identity()
-    goal_id = request.json.get('goal_id', None)
+    goal_id = request.args.get('goal_id', None)
     if not goal_id:
         return jsonify({'message': 'Goal ID is required'})
+
+    # Check if the goal belongs to the user
+    goal = Goal.query.filter_by(id=goal_id, user_id=user_id).first()
+    if not goal:
+        return jsonify({'message': 'Goal not found or does not belong to the user'}), 404
     contributions = Contribution.query.filter_by(goal_id=goal_id)
     return jsonify([{'id': c.id, 'amount': c.amount, 'date': c.date, 'account_id': c.account_id, 'goal_id': c.goal_id} for c in contributions]), 200
 

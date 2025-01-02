@@ -24,12 +24,14 @@ export const useStore = create((set) => ({
   // accounts
   accounts: [],
   addAccount: (account) =>
-    set((state) => ({ accounts: [account, ...state.accounts] })),
+    set((state) => ({
+      accounts: [...state.accounts, account].sort((a, b) => a.name > b.name),
+    })),
   setAccounts: (accounts) => set((state) => ({ accounts })),
 
   // goals
   goals: [],
-  addGoal: (goal) => set((state) => ({ goals: [goal, ...state.goals] })),
+  addGoal: (goal) => set((state) => ({ goals: [...state.goals, goal] })),
   setGoals: (goals) => set((state) => ({ goals })),
 
   rehydrateFlag: false,

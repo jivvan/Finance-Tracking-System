@@ -18,7 +18,8 @@ const Dashboard = () => {
   const [currentAccount, setCurrentAccount] = useState("All accounts");
   const [fetching, setFetching] = useState(false);
   const [tried, setTried] = useState(false);
-  const accountOptions = ["All accounts", "Cash"];
+  const accounts = useStore((state) => state.accounts);
+  const accountOptions = [{ id: -1, name: "All" }, ...accounts];
 
   const dashSummary = useStore((state) => state.dashSummary);
   const setDashSummary = useStore((state) => state.setDashSummary);
@@ -63,7 +64,7 @@ const Dashboard = () => {
           <div className="flex flex-col mb-4 w-max">
             <Select id="countries" required>
               {accountOptions.map((acc) => {
-                return <option key={acc}>{acc}</option>;
+                return <option key={acc.id}>{acc.name}</option>;
               })}
             </Select>
           </div>
