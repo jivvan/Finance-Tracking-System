@@ -8,6 +8,7 @@ import axios from "axios";
 function Login({ setIsAuthenticated }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -101,8 +102,9 @@ function Login({ setIsAuthenticated }) {
                   >
                     Password
                   </Label>
+                  <div className="relative">
                   <TextInput
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     id="password"
                     placeholder=""
@@ -111,6 +113,16 @@ function Login({ setIsAuthenticated }) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                    </div>
+
+
                 </div>
                 {/* <div className="flex items-center justify-between">
                   <div className="flex items-start">
