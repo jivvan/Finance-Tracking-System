@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Button } from "flowbite-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -60,10 +61,10 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/api/transactions",
         {
-          account_id: parseInt(selectedAccount), // Send selected account ID
+          account_id: parseInt(selectedAccount),
           amount: amount * -1,
           description,
-          category_id: selectedCategory, // Send selected category ID
+          category_id: selectedCategory,
         },
         {
           headers: {
@@ -145,20 +146,19 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
               ))}
             </select>
           </div>
-          <button
-            type="button"
-            className="px-4 py-2 text-white bg-red-500 rounded"
-            onClick={toggleExpenseCard}
-          >
-            Close
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 ml-2 text-white bg-green-500 rounded"
-            disabled={loading}
-          >
-            {loading ? "Adding..." : "Add"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <Button color="failure" type="button" onClick={toggleExpenseCard}>
+              Close
+            </Button>
+            <Button
+              color="success"
+              isProcessing={loading}
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Adding..." : "Add"}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

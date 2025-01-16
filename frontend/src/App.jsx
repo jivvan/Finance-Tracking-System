@@ -1,17 +1,21 @@
 // src/App.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AppRouter from "./AppRouter";
 import { ToastContainer } from "react-toastify";
+import LoadingScreen from "./Components/LoadingScreen";
 import "react-toastify/dist/ReactToastify.css";
 import { useStore } from "./lib/utils";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+  const setDashSummary = useStore((state) => state.setDashSummary);
   const setCategories = useStore((state) => state.setCategories);
   const setAccounts = useStore((state) => state.setAccounts);
   const setGoals = useStore((state) => state.setGoals);
   const setProfile = useStore((state) => state.setProfile);
+  const rehydrate = useStore((state) => state.rehydrateFlag);
 
   async function fetchCategories(token) {
     const response = await axios.get(
@@ -23,6 +27,18 @@ function App() {
       }
     );
     setCategories(response.data);
+  }
+
+  async function fetchDashSummary(token) {
+    const response = await axios.get(
+      import.meta.env.VITE_API_URL + "/dashboard",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setDashSummary(response.data);
   }
 
   async function fetchAccounts(token) {
@@ -64,26 +80,31 @@ function App() {
   async function hydrateData() {
     const token = localStorage.getItem("token");
     if (token !== null) {
+      setLoading(true);
       try {
         await Promise.all([
+          fetchDashSummary(token),
           fetchAccounts(token),
           fetchCategories(token),
           fetchGoals(token),
           fetchProfile(token),
         ]);
+        setLoading(false);
       } catch (e) {
         toast.error("Unable to fetch data");
       }
+    } else {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
     hydrateData();
-  });
+  }, [rehydrate]);
 
   return (
     <div>
-      <AppRouter />
+      {loading ? <LoadingScreen /> : <AppRouter />}
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -97,7 +118,6 @@ function App() {
         theme="light"
         transition:Bounce
       />
-      <ToastContainer />
     </div>
   );
 }

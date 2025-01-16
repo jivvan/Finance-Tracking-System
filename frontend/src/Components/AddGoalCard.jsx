@@ -1,11 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Button } from "flowbite-react";
+import { useStore } from "../lib/utils";
 
 export default function AddGoalCard({ toggleAddGoalCard }) {
   const [name, setName] = useState("");
   const [targetAmount, setTargetAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  const addGoal = useStore((state) => state.addGoal);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +33,7 @@ export default function AddGoalCard({ toggleAddGoalCard }) {
           },
         }
       );
+      addGoal(response.data.goal);
       toast.success("Goal added successfully!");
       toggleAddGoalCard(); // Close the modal after successful submission
     } catch (e) {
@@ -73,20 +77,19 @@ export default function AddGoalCard({ toggleAddGoalCard }) {
               onChange={(e) => setTargetAmount(e.target.value)}
             />
           </div>
-          <button
-            type="button"
-            className="px-4 py-2 text-white bg-red-500 rounded"
-            onClick={toggleAddGoalCard}
-          >
-            Close
-          </button>
-          <button
-            disabled={loading}
-            type="submit"
-            className="px-4 py-2 ml-2 text-white bg-green-500 rounded disabled:bg-green-300"
-          >
-            {loading ? "Adding..." : "Add"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <Button color="failure" type="button" onClick={toggleAddGoalCard}>
+              Close
+            </Button>
+            <Button
+              color="success"
+              isProcessing={loading}
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Adding..." : "Add"}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

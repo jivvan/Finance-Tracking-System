@@ -2,17 +2,22 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, Button, Label, Select, TextInput } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from "flowbite-react";
 import ContributionsCard from "../Components/ContributionsCard";
 import AddGoalCard from "../Components/AddGoalCard";
 import { GoGoal } from "react-icons/go";
+import { useStore } from "../lib/utils";
 export default function Goals() {
-  const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const goals = useStore((state) => state.goals);
   const [showContributionsCard, setShowContributionsCard] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState(null);
-
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const toggleContributionsCard = (goal = null) => {
     setSelectedGoal(goal);
@@ -23,28 +28,6 @@ export default function Goals() {
   const toggleAddGoalCard = () => {
     setShowAddGoalCard(!showAddGoalCard);
   };
-
-
-  useEffect(() => {
-    const fetchGoals = async () => {
-      const token = localStorage.getItem("token");
-      setLoading(true);
-      try {
-        const response = await axios.get(`${API_URL}/api/goals`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setGoals(response.data);
-      } catch (error) {
-        console.error("Error fetching goals:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGoals();
-  }, [API_URL]);
 
   return (
     <>
@@ -83,7 +66,7 @@ export default function Goals() {
             </div>
           </div>
         </Card>
-        <div className="overflow-x-auto mt-6">
+        <div className="mt-6 overflow-x-auto">
           <Table hoverable>
             <TableHead>
               <TableHeadCell>Goal Name</TableHeadCell>
@@ -92,13 +75,7 @@ export default function Goals() {
               <TableHeadCell>Actions</TableHeadCell>
             </TableHead>
             <TableBody className="divide-y">
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan="4" className="text-center">
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : goals.length === 0 ? (
+              {goals.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan="4" className="text-center">
                     No goals found.
@@ -107,7 +84,7 @@ export default function Goals() {
               ) : (
                 goals.map((goal) => (
                   <TableRow key={goal.id} className="bg-white">
-                    <TableCell className="whitespace-nowrap font-medium text-gray-900">
+                    <TableCell className="font-medium text-gray-900 whitespace-nowrap">
                       {goal.name}
                     </TableCell>
                     <TableCell>{goal.target_amount}</TableCell>
@@ -115,15 +92,15 @@ export default function Goals() {
                     <TableCell className="flex gap-2">
                       <Button
                         size="xs"
-                        className="bg-blue-500 text-white"
+                        className="text-white bg-blue-500"
                         onClick={() => toggleContributionsCard(goal)}
                       >
                         Contribute
                       </Button>
-                      <Button size="xs" className="bg-green-500 text-white">
+                      <Button size="xs" className="text-white bg-green-500">
                         Edit
                       </Button>
-                      <Button size="xs" className="bg-red-500 text-white">
+                      <Button size="xs" className="text-white bg-red-500">
                         Delete
                       </Button>
                     </TableCell>

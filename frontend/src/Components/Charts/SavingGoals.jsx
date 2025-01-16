@@ -1,10 +1,10 @@
 import React from "react";
-import { Card, Progress } from "flowbite-react";
+import { Link } from "react-router-dom";
+import { Card, Progress, Badge } from "flowbite-react";
 import { getColorPerProgress, useStore } from "../../lib/utils";
 
 const SavingGoals = () => {
   const goals = useStore((state) => state.goals);
-
   return (
     // <Card className="p-4">
     //   <h2 className="mb-4 text-lg font-semibold">Saving Goals</h2>

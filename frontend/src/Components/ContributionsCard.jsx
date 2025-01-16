@@ -1,10 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Label, Select, TextInput } from "flowbite-react";
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from "flowbite-react";
+import { useStore } from "../lib/utils";
 
 const ContributionsCard = ({ goal, toggleContributionsCard }) => {
-  const [accounts, setAccounts] = useState([]);
+  const accounts = useStore((state) => state.accounts);
   const [contributions, setContributions] = useState([]);
   const [amount, setAmount] = useState("");
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -13,30 +21,22 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    const fetchAccountsAndContributions = async () => {
+    const fetchContributions = async () => {
       const token = localStorage.getItem("token");
       setLoading(true);
 
       try {
-        // Fetch accounts from the API
-        const accountResponse = await axios.get(`${API_URL}/api/accounts`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        setAccounts(accountResponse.data);
+        const contributionsResponse = await axios.get(
+          `${API_URL}/api/contributions`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            params: { goal_id: goal.id },
+          }
+        );
 
-        // Fetch contributions for the selected goal
-        const contributionsResponse = await axios.get(`${API_URL}/api/contributions`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          params: { goal_id: goal.id },  // Correctly passing the goal_id in the params
-        });
-
-        // Update contributions state
         setContributions(contributionsResponse.data);
       } catch (error) {
         console.error("Error fetching accounts or contributions:", error);
@@ -46,7 +46,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
       }
     };
 
-    fetchAccountsAndContributions();
+    fetchContributions();
   }, [API_URL, goal.id]);
 
   const handleAddContribution = async () => {
@@ -63,24 +63,28 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
     };
 
     try {
-      // Add new contribution to the goal
-      const response = await axios.post(`${API_URL}/api/contributions`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // Ensure the correct Content-Type header
-        },
-      });
+      const response = await axios.post(
+        `${API_URL}/api/contributions`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status === 200) {
-        // Reset the form after successful contribution
         setAmount("");
         setSelectedAccount("");
 
-        // Refresh the contributions list after adding the contribution
-        const updatedContributions = await axios.get(`${API_URL}/api/contributions`, {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { goal_id: goal.id },  // Make sure goal_id is passed correctly
-        });
+        const updatedContributions = await axios.get(
+          `${API_URL}/api/contributions`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { goal_id: goal.id }, // Make sure goal_id is passed correctly
+          }
+        );
         setContributions(updatedContributions.data);
         alert("Contribution added successfully!");
       } else {
@@ -99,9 +103,10 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
         onClick={toggleContributionsCard}
       ></div>
       <div className="relative p-6 bg-white rounded shadow-lg w-96">
-        <h2 className="mb-4 text-xl font-bold">Contribute to Goal: {goal.name}</h2>
+        <h2 className="mb-4 text-xl font-bold">
+          Contribute to Goal: {goal.name}
+        </h2>
 
-        {/* Contribution Form */}
         <div className="mb-4">
           <Label htmlFor="account">Select Account</Label>
           <Select
@@ -129,14 +134,15 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
           />
         </div>
 
-        {/* Error Message */}
         {error && <div className="text-red-500">{error}</div>}
 
-        <Button onClick={handleAddContribution} className="bg-green-500 text-white">
+        <Button
+          onClick={handleAddContribution}
+          className="text-white bg-green-500"
+        >
           Add Contribution
         </Button>
 
-        {/* Contributions Table */}
         <div className="mt-6 overflow-x-auto">
           <Table hoverable>
             <TableHead>
@@ -165,7 +171,9 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
 
                   return (
                     <TableRow key={contribution.id}>
-                      <TableCell>{new Date(contribution.date).toLocaleString()}</TableCell>
+                      <TableCell>
+                        {new Date(contribution.date).toLocaleString()}
+                      </TableCell>
                       <TableCell>{contribution.amount}</TableCell>
                       <TableCell>{accountName || "Unknown Account"}</TableCell>
                     </TableRow>
@@ -178,7 +186,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
 
         <Button
           onClick={toggleContributionsCard}
-          className="mt-4 bg-red-500 text-white"
+          className="mt-4 text-white bg-red-500"
         >
           Close
         </Button>

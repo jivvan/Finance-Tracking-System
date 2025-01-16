@@ -15,6 +15,14 @@ class AccountSchema(Schema):
     user_id = fields.Integer()
     transactions = fields.Nested(TransactionSchema, many=True)
 
+class GoalSchema(Schema):
+    id = fields.Int(dump_only=True)  # Read-only field
+    name = fields.Str(required=True, validate=validate.Length(min=1, max=64))
+    target_amount = fields.Float(required=True, validate=validate.Range(min=0))
+    current_amount = fields.Float(dump_only=True)  # Read-only field
+    user_id = fields.Int(dump_only=True)  # Read-only field
+    created_at = fields.DateTime(dump_only=True)  # Read-only field
+    updated_at = fields.DateTime(dump_only=True)  # Read-only field
 
 class UserRegisterSchema(Schema):
     username = fields.Str(

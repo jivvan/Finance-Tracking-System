@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useStore } from "../lib/utils";
+import { Button } from "flowbite-react";
 
 export default function AccountCard({ toggleAccountCard }) {
   const [name, setName] = useState("");
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
+  const addAccount = useStore((state) => state.addAccount);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -22,14 +25,14 @@ export default function AccountCard({ toggleAccountCard }) {
           },
         }
       );
-      console.log(respnse);
+      console.log(response);
+      addAccount(response.data.account);
       toast("Account created successfully");
+      toggleAccountCard();
     } catch (e) {
       if (e.response.data.message) {
         toast(e.response.data.message);
       }
-    } finally {
-      setLoading(false);
     }
   };
   return (
@@ -37,9 +40,7 @@ export default function AccountCard({ toggleAccountCard }) {
       <div
         className="absolute inset-0 bg-black opacity-50"
         onClick={toggleAccountCard}
-      >
-        
-      </div>
+      ></div>
       <div className="relative p-6 bg-white rounded shadow-lg w-96">
         <h2 className="mb-4 text-xl font-bold">Add Account</h2>
         <form onSubmit={handleSubmit}>
@@ -68,20 +69,19 @@ export default function AccountCard({ toggleAccountCard }) {
               className="w-full px-3 py-2 border border-gray-300 rounded"
             />
           </div>
-          <button
-            type="button"
-            className="px-4 py-2 text-white bg-red-500 rounded"
-            onClick={toggleAccountCard}
-          >
-            Close
-          </button>
-          <button
-            disabled={loading}
-            type="submit"
-            className="px-4 py-2 ml-2 text-white bg-green-500 rounded disabled:bg-green-300"
-          >
-            Add
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <Button color="failure" type="button" onClick={toggleAccountCard}>
+              Close
+            </Button>
+            <Button
+              color="success"
+              isProcessing={loading}
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Adding..." : "Add"}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

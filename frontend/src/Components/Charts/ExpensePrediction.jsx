@@ -9,6 +9,15 @@ Chart.register(...registerables);
 const ExpensePrediction = ({ dashSummary }) => {
   const predictions = dashSummary.prediction;
 
+  if (predictions.message) {
+    return (
+      <Card>
+        <h2 className="text-lg font-semibold">Expense Prediction</h2>
+        There aren't enough expenses to make a prediction
+      </Card>
+    );
+  }
+
   // Prepare data for Chart.js
   const historicalDates = Object.keys(predictions.historical);
   const historicalValues = Object.values(predictions.historical).map((v) => -v);
@@ -71,7 +80,7 @@ const ExpensePrediction = ({ dashSummary }) => {
   };
 
   return (
-    <Card className="p-4">
+    <Card>
       <h2 className="text-lg font-semibold">Expense Prediction</h2>
       <div className="w-full h-96">
         <Line data={data} options={options} />

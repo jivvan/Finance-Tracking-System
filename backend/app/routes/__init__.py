@@ -30,22 +30,40 @@ def get_dashboard_data():
     else:
         accounts = user.accounts
 
+    today = datetime.utcnow()
+
     # 1. Current Balance
     current_balance = sum(account.balance for account in accounts)
 
-    # 2. Past 30 Day Expense
-    past_30_days = datetime.utcnow() - timedelta(days=30)
-    past_30_day_expense = sum(
+    # 2. This Month's Expense and Income
+    this_month_start = datetime(today.year, today.month, 1)
+    this_month_expense = sum(
         transaction.amount for account in accounts for transaction in account.transactions.filter(
-            Transaction.date >= past_30_days,
+            Transaction.date >= this_month_start,
             Transaction.amount < 0
         ).all()
     )
-
-    # 3. Past 30 Day Income
-    past_30_day_income = sum(
+    this_month_income = sum(
         transaction.amount for account in accounts for transaction in account.transactions.filter(
-            Transaction.date >= past_30_days,
+            Transaction.date >= this_month_start,
+            Transaction.amount > 0
+        ).all()
+    )
+
+    # 3. Last Month's Expense and Income
+    last_month_end = this_month_start
+    last_month_start = datetime(today.year, today.month - 1, 1) if today.month > 1 else datetime(today.year - 1, 12, 1)
+    last_month_expense = sum(
+        transaction.amount for account in accounts for transaction in account.transactions.filter(
+            Transaction.date >= last_month_start,
+            Transaction.date < last_month_end,
+            Transaction.amount < 0
+        ).all()
+    )
+    last_month_income = sum(
+        transaction.amount for account in accounts for transaction in account.transactions.filter(
+            Transaction.date >= last_month_start,
+            Transaction.date < last_month_end,
             Transaction.amount > 0
         ).all()
     )
@@ -53,8 +71,17 @@ def get_dashboard_data():
     # 4. Financial Overview of Last 6 Months (Income/Expense of Each Month)
     financial_overview = []
     for i in range(6):
-        start_date = datetime.utcnow() - timedelta(days=30 * (i + 1))
-        end_date = datetime.utcnow() - timedelta(days=30 * i)
+        month = today.month - i
+        year = today.year
+        if month <= 0:
+            month += 12
+            year -= 1
+        start_date = datetime(year, month, 1)
+        if month == 12:
+            end_date = datetime(year + 1, 1, 1)
+        else:
+            end_date = datetime(year, month + 1, 1)
+
         month_income = sum(
             transaction.amount for account in accounts for transaction in account.transactions.filter(
                 Transaction.date >= start_date,
@@ -76,19 +103,18 @@ def get_dashboard_data():
         })
 
     # 5. Expense Breakdown by Category for Last Month
-    last_month_start = datetime.utcnow() - timedelta(days=30)
     expense_breakdown = {}
     for category in user.categories:
         category_expenses = sum(
             transaction.amount for account in accounts for transaction in account.transactions.filter(
-                Transaction.date >= last_month_start,
+                Transaction.date >= this_month_start,
                 Transaction.amount < 0,
                 Transaction.category_id == category.id
             ).all()
         )
         if category_expenses:
             expense_breakdown[category.name] = category_expenses
-    
+
     # 6. Recent 5 transactions
     recent_transactions = []
     for account in accounts:
@@ -98,14 +124,9 @@ def get_dashboard_data():
     recent_transactions = sorted(recent_transactions, key=lambda t: t.date, reverse=True)[:5]
     serialized_recent_transactions = TransactionSchema(many=True).dump(recent_transactions)
 
-
     # 7. Finance Calendar (Last 30 Days)
     finance_calendar = defaultdict(lambda: {'income': 0, 'expense': 0})
-
-    # Calculate the start date for the last 30 days
-    start_date = datetime.utcnow() - timedelta(days=90)
-
-    # Iterate through transactions for the last 30 days in descending order
+    start_date = today - timedelta(days=90)
     for account in accounts:
         for transaction in account.transactions.filter(Transaction.date >= start_date).order_by(Transaction.date.desc()).all():
             date = transaction.date.date()
@@ -114,21 +135,20 @@ def get_dashboard_data():
                 finance_calendar[date]['income'] += amount
             else:
                 finance_calendar[date]['expense'] += amount
-
     finance_calendar = [{'date': date, **data} for date, data in sorted(finance_calendar.items(), reverse=True)]
 
- 
     return jsonify({
         'current_balance': current_balance,
-        'past_30_day_expense': past_30_day_expense,
-        'past_30_day_income': past_30_day_income,
+        'this_month_expense': this_month_expense,
+        'this_month_income': this_month_income,
+        'last_month_expense': last_month_expense,
+        'last_month_income': last_month_income,
         'financial_overview': financial_overview,
         'expense_breakdown': expense_breakdown,
         'recent_transactions': serialized_recent_transactions,
         'prediction': predict_spending(user_id, account_id),
         'calendar': finance_calendar
     }), 200
-
 
 
 def predict_spending(user_id, account_id=None):
