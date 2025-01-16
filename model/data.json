@@ -1,0 +1,402 @@
+[
+    {
+        "description": "Bought groceries from the supermarket",
+        "category": "Groceries"
+    },
+    {
+        "description": "Purchased fruits and vegetables",
+        "category": "Groceries"
+    },
+    {
+        "description": "Weekly grocery shopping",
+        "category": "Groceries"
+    },
+    {
+        "description": "Dinner at a restaurant",
+        "category": "Dining"
+    },
+    {
+        "description": "Lunch at a cafe",
+        "category": "Dining"
+    },
+    {
+        "description": "Ordered pizza for delivery",
+        "category": "Dining"
+    },
+    {
+        "description": "Paid electricity bill",
+        "category": "Utilities"
+    },
+    {
+        "description": "Water bill payment",
+        "category": "Utilities"
+    },
+    {
+        "description": "Internet subscription fee",
+        "category": "Utilities"
+    },
+    {
+        "description": "Monthly rent payment",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Mortgage installment",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Apartment rent",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Bus fare to work",
+        "category": "Transportation"
+    },
+    {
+        "description": "Fuel for the car",
+        "category": "Transportation"
+    },
+    {
+        "description": "Taxi ride to the airport",
+        "category": "Transportation"
+    },
+    {
+        "description": "Doctor's appointment",
+        "category": "Health"
+    },
+    {
+        "description": "Medicine from the pharmacy",
+        "category": "Health"
+    },
+    {
+        "description": "Gym membership fee",
+        "category": "Health"
+    },
+    {
+        "description": "Movie tickets",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Concert tickets",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Netflix subscription",
+        "category": "Entertainment"
+    },
+    {
+        "description": "New pair of shoes",
+        "category": "Clothing"
+    },
+    {
+        "description": "Winter jacket purchase",
+        "category": "Clothing"
+    },
+    {
+        "description": "Bought a formal shirt",
+        "category": "Clothing"
+    },
+    {
+        "description": "Online course subscription",
+        "category": "Education"
+    },
+    {
+        "description": "Textbooks for college",
+        "category": "Education"
+    },
+    {
+        "description": "Workshop registration fee",
+        "category": "Education"
+    },
+    {
+        "description": "Miscellaneous expenses",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Charity donation",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Gift for a friend",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Bought snacks from the store",
+        "category": "Groceries"
+    },
+    {
+        "description": "Breakfast at a diner",
+        "category": "Dining"
+    },
+    {
+        "description": "Gas bill payment",
+        "category": "Utilities"
+    },
+    {
+        "description": "House rent",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Train ticket to the city",
+        "category": "Transportation"
+    },
+    {
+        "description": "Dental checkup",
+        "category": "Health"
+    },
+    {
+        "description": "Video game purchase",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Bought a new dress",
+        "category": "Clothing"
+    },
+    {
+        "description": "Tuition fee payment",
+        "category": "Education"
+    },
+    {
+        "description": "Unexpected repair costs",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Bought detergent and cleaning supplies",
+        "category": "Groceries"
+    },
+    {
+        "description": "Coffee at a coffee shop",
+        "category": "Dining"
+    },
+    {
+        "description": "Phone bill payment",
+        "category": "Utilities"
+    },
+    {
+        "description": "Condominium maintenance fee",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Bicycle repair costs",
+        "category": "Transportation"
+    },
+    {
+        "description": "Vitamins and supplements",
+        "category": "Health"
+    },
+    {
+        "description": "Bowling night with friends",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Bought a new pair of jeans",
+        "category": "Clothing"
+    },
+    {
+        "description": "Language course fee",
+        "category": "Education"
+    },
+    {
+        "description": "Unexpected medical expenses",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Bought milk and bread from the store",
+        "category": "Groceries"
+    },
+    {
+        "description": "Purchased organic eggs and cheese",
+        "category": "Groceries"
+    },
+    {
+        "description": "Stocked up on canned goods",
+        "category": "Groceries"
+    },
+    {
+        "description": "Dinner at a sushi restaurant",
+        "category": "Dining"
+    },
+    {
+        "description": "Lunch at a burger joint",
+        "category": "Dining"
+    },
+    {
+        "description": "Ordered Chinese takeout",
+        "category": "Dining"
+    },
+    {
+        "description": "Paid the gas bill for the month",
+        "category": "Utilities"
+    },
+    {
+        "description": "Electricity bill for the apartment",
+        "category": "Utilities"
+    },
+    {
+        "description": "Monthly water bill payment",
+        "category": "Utilities"
+    },
+    {
+        "description": "Rent for the office space",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Mortgage payment for the house",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Monthly condo fee",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Train ticket to visit family",
+        "category": "Transportation"
+    },
+    {
+        "description": "Car insurance premium",
+        "category": "Transportation"
+    },
+    {
+        "description": "Parking fee at the mall",
+        "category": "Transportation"
+    },
+    {
+        "description": "Annual health checkup",
+        "category": "Health"
+    },
+    {
+        "description": "Prescription medication",
+        "category": "Health"
+    },
+    {
+        "description": "Yoga class fee",
+        "category": "Health"
+    },
+    {
+        "description": "Tickets to a comedy show",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Purchased a new video game",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Subscription to Spotify",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Bought a winter coat",
+        "category": "Clothing"
+    },
+    {
+        "description": "Purchased running shoes",
+        "category": "Clothing"
+    },
+    {
+        "description": "New sunglasses",
+        "category": "Clothing"
+    },
+    {
+        "description": "Online coding course",
+        "category": "Education"
+    },
+    {
+        "description": "Textbooks for the semester",
+        "category": "Education"
+    },
+    {
+        "description": "Workshop on digital marketing",
+        "category": "Education"
+    },
+    {
+        "description": "Donation to a local charity",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Gift for a family member",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Unexpected car repair",
+        "category": "Other Expenses"
+    },
+    {
+        "description": "Bought cereal and snacks",
+        "category": "Groceries"
+    },
+    {
+        "description": "Purchased fresh seafood",
+        "category": "Groceries"
+    },
+    {
+        "description": "Dinner at an Italian restaurant",
+        "category": "Dining"
+    },
+    {
+        "description": "Lunch at a sandwich shop",
+        "category": "Dining"
+    },
+    {
+        "description": "Ordered Indian food delivery",
+        "category": "Dining"
+    },
+    {
+        "description": "Paid the internet bill",
+        "category": "Utilities"
+    },
+    {
+        "description": "Monthly cable TV subscription",
+        "category": "Utilities"
+    },
+    {
+        "description": "Rent for the studio apartment",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Mortgage payment for the condo",
+        "category": "Rent/Mortgage"
+    },
+    {
+        "description": "Bus pass for the month",
+        "category": "Transportation"
+    },
+    {
+        "description": "Taxi fare to the train station",
+        "category": "Transportation"
+    },
+    {
+        "description": "Eye exam and glasses",
+        "category": "Health"
+    },
+    {
+        "description": "Massage therapy session",
+        "category": "Health"
+    },
+    {
+        "description": "Tickets to a music festival",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Purchased a new board game",
+        "category": "Entertainment"
+    },
+    {
+        "description": "Bought a summer dress",
+        "category": "Clothing"
+    },
+    {
+        "description": "New backpack for school",
+        "category": "Clothing"
+    },
+    {
+        "description": "Online photography course",
+        "category": "Education"
+    },
+    {
+        "description": "Seminar on personal finance",
+        "category": "Education"
+    },
+    {
+        "description": "Unexpected home repair",
+        "category": "Other Expenses"
+    }
+]

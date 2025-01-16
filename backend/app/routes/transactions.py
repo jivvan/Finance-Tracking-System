@@ -1,7 +1,7 @@
 import pandas as pd
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity
-from ..utils import jwt_required_user_exists
+from ..utils import jwt_required_user_exists, description_to_bert_embedding, rf_model
 from ..models import db, User, Account, Transaction, Category
 from ..schemas import TransactionCreateSchema, TransactionUpdateSchema, PredictionSchema
 
@@ -154,3 +154,18 @@ def delete_transaction(transaction_id):
     db.session.commit()
 
     return jsonify({'message': 'Transaction deleted successfully'}), 200
+
+@transactions.route('/predict_category', methods=['POST'])
+def predict_category():
+    data = request.json
+    description = data.get('description')
+
+    if not description:
+        return jsonify({'error': 'Description is required'}), 400
+
+    description_embedding = description_to_bert_embedding(description)
+    description_embedding = description_embedding.reshape(1, -1) 
+
+    predicted_category = rf_model.predict(description_embedding)
+
+    return jsonify({'predicted_category': predicted_category[0]}), 200
