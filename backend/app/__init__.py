@@ -18,10 +18,17 @@ def create_app(mode='development'):
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}},
-         allow_headers=["Content-Type", "Authorization"],
-         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-         supports_credentials=True)
+    CORS(
+        app,
+        resources={
+            r"/*": {
+                "origins": ["http://localhost:5173", "https://finance.parajulijivan.com.np"],
+                "allow_headers": ["Content-Type", "Authorization"],
+                "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                "supports_credentials": True,
+            }
+        },
+    )
 
     @app.before_request
     def handle_preflight():
