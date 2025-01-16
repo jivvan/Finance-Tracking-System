@@ -23,6 +23,8 @@ const Dashboard = () => {
 
   const dashSummary = useStore((state) => state.dashSummary);
   const setDashSummary = useStore((state) => state.setDashSummary);
+  const dashChange = useStore((state) => state.dashChange);
+  const updatedDash = useStore((state) => state.updatedDash);
 
   async function fetchSummary(show_loading = false) {
     if (show_loading) {
@@ -51,8 +53,9 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    if (Object.keys(dashSummary).length == 0 && !tried) {
+    if ((Object.keys(dashSummary).length == 0 && !tried) || dashChange) {
       fetchSummary();
+      updatedDash();
     }
   }, []);
 
@@ -61,13 +64,13 @@ const Dashboard = () => {
       {Object.keys(dashSummary).length !== 0 && !fetching ? (
         <main className="p-4">
           <QuickCreate refreshFn={fetchSummary} />
-          <div className="flex flex-col mb-4 w-max">
+          {/* <div className="flex flex-col mb-4 w-max">
             <Select id="countries" required>
               {accountOptions.map((acc) => {
                 return <option key={acc.id}>{acc.name}</option>;
               })}
             </Select>
-          </div>
+          </div> */}
           <KeyMetrics dashSummary={dashSummary} />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <OverviewChart dashSummary={dashSummary} />

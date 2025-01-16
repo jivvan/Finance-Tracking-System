@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Button } from "flowbite-react";
+import { useStore } from "../lib/utils";
 
-export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
+export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -11,6 +12,9 @@ export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+
+  const updateAccountBalance = useStore((state) => state.updateAccountBalance);
 
   useEffect(() => {
     const fetchAccountsAndCategories = async () => {
@@ -51,7 +55,13 @@ export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedAccount || !amount || !description || !selectedCategory) {
+    if (
+      !selectedAccount ||
+      !amount ||
+      !description ||
+      !selectedCategory ||
+      !date
+    ) {
       toast.error("Please fill in all fields.");
       return;
     }
@@ -59,13 +69,17 @@ export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
     setLoading(true);
 
     try {
+      // Format the date as "YYYY-MM-DD HH:MM:SS"
+      const formattedDate = `${date} 00:00:00`; // Append "00:00:00" for time
+
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/api/transactions",
         {
-          account_id: selectedAccount, // Send selected account ID
+          account_id: selectedAccount,
           amount,
           description,
-          category_id: selectedCategory, // Send selected category ID
+          category_id: selectedCategory,
+          date: formattedDate, // Include the formatted date
         },
         {
           headers: {
@@ -73,9 +87,17 @@ export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
           },
         }
       );
+
       toast.success("Income added successfully");
       refreshFn();
       toggleIncomeCard();
+      updateAccountBalance(
+        {
+          id: selectedAccount,
+          amount: amount,
+        },
+        "self"
+      );
     } catch (e) {
       console.log(e);
       if (e.response && e.response.data.message) {
@@ -147,6 +169,16 @@ export default function ExpenseCard({ refreshFn, toggleIncomeCard }) {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Date</label>
+            <input
+              type="date"
+              name="date"
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
           </div>
           <div className="flex flex-wrap gap-2">
             <Button color="failure" type="button" onClick={toggleIncomeCard}>

@@ -8,7 +8,7 @@ const ProtectedRoute = ({ element: Element, ...rest }) => {
   return isAuthenticated ? (
     <Element {...rest} />
   ) : (
-    <Navigate to="/login" replace />
+    <Navigate to="/home" replace />
   );
 };
 

@@ -10,9 +10,13 @@ import {
   TableRow,
 } from "flowbite-react";
 import { useStore } from "../lib/utils";
+import { toast } from "react-toastify";
 
 const ContributionsCard = ({ goal, toggleContributionsCard }) => {
   const accounts = useStore((state) => state.accounts);
+  const updateDash = useStore((state) => state.updateDash);
+  const updateAccountBalance = useStore((state) => state.updateAccountBalance);
+  const updateGoalStatus = useStore((state) => state.updateGoalStatus);
   const [contributions, setContributions] = useState([]);
   const [amount, setAmount] = useState("");
   const [selectedAccount, setSelectedAccount] = useState("");
@@ -74,10 +78,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
         }
       );
 
-      if (response.status === 200) {
-        setAmount("");
-        setSelectedAccount("");
-
+      if (response.status === 201) {
         const updatedContributions = await axios.get(
           `${API_URL}/api/contributions`,
           {
@@ -86,13 +87,26 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
           }
         );
         setContributions(updatedContributions.data);
-        alert("Contribution added successfully!");
+        updateDash();
+        const accId = parseInt(selectedAccount);
+        updateAccountBalance(
+          { id: accId, amount: -1 * payload.amount },
+          "self"
+        );
+        updateGoalStatus({ id: goal.id, amount: payload.amount });
+        toast.success("Contribution added successfully!");
+        setAmount("");
+        setSelectedAccount("");
       } else {
         setError("Failed to add contribution. Please try again.");
       }
     } catch (error) {
-      console.error("Error adding contribution:", error);
-      setError("An error occurred while adding the contribution.");
+      //   console.error("Error adding contribution:", error);
+      if (error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("An error occurred while adding the contribution.");
+      }
     }
   };
 
@@ -143,7 +157,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
           Add Contribution
         </Button>
 
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-6 overflow-x-auto max-h-96">
           <Table hoverable>
             <TableHead>
               <TableHeadCell>Date</TableHeadCell>

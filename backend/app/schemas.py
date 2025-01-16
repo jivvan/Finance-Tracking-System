@@ -56,10 +56,10 @@ class AccountUpdateSchema(Schema):
 
 class TransactionCreateSchema(Schema):
     amount = fields.Float(required=True)
-    description = fields.Str(
-        required=True, validate=validate.Length(min=1, max=128))
+    description = fields.Str(required=True, validate=validate.Length(max=128))
     account_id = fields.Int(required=True)
     category_id = fields.Int(required=True)
+    date = fields.DateTime(required=True, format="%Y-%m-%d %H:%M:%S")
 
 
 class TransactionUpdateSchema(Schema):

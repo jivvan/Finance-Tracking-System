@@ -9,6 +9,7 @@ export default function AccountCard({ toggleAccountCard }) {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
   const addAccount = useStore((state) => state.addAccount);
+  const updateDash = useStore((state) => state.updateDash);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -29,6 +30,7 @@ export default function AccountCard({ toggleAccountCard }) {
       addAccount(response.data.account);
       toast("Account created successfully");
       toggleAccountCard();
+      updateDash();
     } catch (e) {
       if (e.response.data.message) {
         toast(e.response.data.message);

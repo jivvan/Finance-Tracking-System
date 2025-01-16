@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
@@ -11,6 +16,7 @@ import Sidebar from "./Components/Sidebar";
 import Goals from "./Pages/Goals";
 import ProtectedRoute from "./ProtectedRoute";
 import Transactions from "./Pages/Transactions";
+import PageNotFound from "./Pages/PageNotFound";
 
 function AppRouter() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -63,10 +69,8 @@ function AppRouter() {
             path="/accounts"
             element={<ProtectedRoute element={Accounts} />}
           />
-          <Route
-            path="/goals"
-            element={<ProtectedRoute element={Goals} />}
-          />
+          <Route path="/goals" element={<ProtectedRoute element={Goals} />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>
     </>

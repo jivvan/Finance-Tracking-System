@@ -2,13 +2,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Button, Label, Select, TextInput, Table } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
-import { TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from "flowbite-react";
 import { useStore } from "../lib/utils";
-import { HiCurrencyDollar} from "react-icons/hi";
+import { HiCurrencyDollar } from "react-icons/hi";
 
 function Transactions() {
   const transactions = useStore((state) => state.transactions);
   const setTransactions = useStore((state) => state.setTransactions);
+  const updateDash = useStore((state) => state.updateDash);
 
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +28,11 @@ function Transactions() {
     total_items: 0,
   });
 
+  function refreshFn() {
+    fetchTransactions(1);
+    updateDash();
+  }
+
   const API_URL = import.meta.env.VITE_API_URL;
 
   const fetchTransactions = async (page = 1) => {
@@ -32,11 +44,11 @@ function Transactions() {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          page, 
+          page,
         },
       });
       setTransactions(response.data.transactions);
-      setPagination(response.data.pagination); 
+      setPagination(response.data.pagination);
       setCurrentPage(response.data.pagination.page);
       setTotalPages(response.data.pagination.total_pages);
     } catch (error) {
@@ -57,7 +69,7 @@ function Transactions() {
   return (
     <>
       <main className="p-4">
-        <QuickCreate />
+        <QuickCreate refreshFn={refreshFn} />
         <Card>
           <div className="flex flex-wrap items-center justify-between space-x-4">
             <h1 className="text-2xl font-bold">Transactions</h1>
@@ -90,7 +102,7 @@ function Transactions() {
             </div>
           </div>
         </Card>
-        <div className="overflow-x-auto mt-6">
+        <div className="mt-6 overflow-x-auto">
           <Table hoverable>
             <TableHead>
               <TableHeadCell>Description</TableHeadCell>
@@ -113,7 +125,7 @@ function Transactions() {
               ) : (
                 transactions.map((transaction) => (
                   <TableRow key={transaction.id} className="bg-white">
-                    <TableCell className="whitespace-nowrap font-medium text-gray-900">
+                    <TableCell className="font-medium text-gray-900 whitespace-nowrap">
                       {transaction.description}
                     </TableCell>
                     <TableCell>
@@ -121,7 +133,9 @@ function Transactions() {
                     </TableCell>
                     <TableCell
                       className={`font-semibold ${
-                        transaction.amount < 0 ? "text-red-500" : "text-green-500"
+                        transaction.amount < 0
+                          ? "text-red-500"
+                          : "text-green-500"
                       }`}
                     >
                       Rs. {transaction.amount}
@@ -134,13 +148,13 @@ function Transactions() {
         </div>
 
         {/* Pagination  Section */}
-        
+
         <div className="flex items-center justify-center mt-4">
           <nav className="flex gap-2">
             <Button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={!pagination.has_prev || loading}
-              className="bg-white text-gray-700 hover:bg-gray-100"
+              className="text-gray-700 bg-white hover:bg-gray-100"
             >
               Previous
             </Button>
@@ -161,7 +175,7 @@ function Transactions() {
             <Button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={!pagination.has_next || loading}
-              className="bg-white text-gray-700 hover:bg-gray-100"
+              className="text-gray-700 bg-white hover:bg-gray-100"
             >
               Next
             </Button>

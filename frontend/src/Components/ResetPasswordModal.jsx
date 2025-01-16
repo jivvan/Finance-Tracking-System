@@ -61,6 +61,7 @@ export default function ResetPasswordModal() {
     <>
       <button
         onClick={() => setOpenModal(true)}
+        type="button"
         className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
       >
         Forgot password?
@@ -106,7 +107,7 @@ export default function ResetPasswordModal() {
                     onClick={resetPassword}
                     color="blue"
                     isProcessing={loading}
-                    type="submit"
+                    type="button"
                     disabled={loading}
                   >
                     {loading ? "Resetting" : "Reset password"}
@@ -134,7 +135,7 @@ export default function ResetPasswordModal() {
                     onClick={sendEmail}
                     color="blue"
                     isProcessing={loading}
-                    type="submit"
+                    type="button"
                     disabled={loading}
                   >
                     {loading ? "Sending..." : "Send reset link"}

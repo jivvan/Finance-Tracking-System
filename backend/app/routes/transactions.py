@@ -69,20 +69,27 @@ def create_transaction():
     description = data['description']
     account_id = data['account_id']
     category_id = data['category_id']
+    date = data['date'] 
 
     user_id = get_jwt_identity()
     account = Account.query.filter_by(id=account_id, user_id=user_id).first()
     if not account:
         return jsonify({'message': 'Account not found'}), 404
 
-    category = Category.query.filter_by(
-        id=category_id, user_id=user_id).first()
+    category = Category.query.filter_by(id=category_id, user_id=user_id).first()
     if not category:
         return jsonify({'message': 'Category not found'}), 404
 
     new_transaction = Transaction(
-        amount=amount, description=description, account_id=account_id, category_id=category_id)
+        amount=amount,
+        description=description,
+        account_id=account_id,
+        category_id=category_id,
+        date=date 
+    )
+
     account.balance += amount
+
     db.session.add(new_transaction)
     db.session.commit()
 

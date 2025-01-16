@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "flowbite-react";
+import { Button, ToggleSwitch } from "flowbite-react"; // Import ToggleSwitch from Flowbite
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useStore } from "../lib/utils";
 
 export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
   const [accounts, setAccounts] = useState([]);
@@ -10,7 +11,11 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]); // Default to today's date
   const [loading, setLoading] = useState(false);
+  const [autoDetectCategory, setAutoDetectCategory] = useState(true); // Toggle state
+
+  const updateAccountBalance = useStore((state) => state.updateAccountBalance);
 
   useEffect(() => {
     const fetchAccountsAndCategories = async () => {
@@ -46,10 +51,54 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
     fetchAccountsAndCategories();
   }, []);
 
+  // Function to predict category based on description
+  const predictCategory = async (description) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        import.meta.env.VITE_API_URL + "/api/transactions/predict_category",
+        { description },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const predictedCategoryName = response.data.predicted_category;
+      const predictedCategory = categories.find(
+        (cat) => cat.name === predictedCategoryName
+      );
+
+      if (predictedCategory) {
+        setSelectedCategory(predictedCategory.id); // Automatically select the predicted category
+      }
+    } catch (e) {
+      console.error("Failed to predict category:", e);
+    }
+  };
+
+  // Listen for changes in description when auto-detect is enabled
+  useEffect(() => {
+    if (autoDetectCategory && description) {
+      const delayDebounceFn = setTimeout(() => {
+        predictCategory(description);
+      }, 1000); // Debounce for 1 second
+
+      return () => clearTimeout(delayDebounceFn);
+    }
+  }, [description, autoDetectCategory]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedAccount || !amount || !description || !selectedCategory) {
+    if (
+      !selectedAccount ||
+      !amount ||
+      !description ||
+      !selectedCategory ||
+      !date
+    ) {
       toast.error("Please fill in all fields.");
       return;
     }
@@ -57,24 +106,34 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
     setLoading(true);
 
     try {
-      console.log(selectedAccount);
+      // Format the date as "YYYY-MM-DD HH:MM:SS"
+      const formattedDate = `${date} 00:00:00`; // Append "00:00:00" for time
+
+      const transaction = {
+        account_id: parseInt(selectedAccount),
+        amount: amount * -1,
+        description,
+        category_id: selectedCategory,
+        date: formattedDate, // Use the formatted date
+      };
+
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/api/transactions",
-        {
-          account_id: parseInt(selectedAccount),
-          amount: amount * -1,
-          description,
-          category_id: selectedCategory,
-        },
+        transaction,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
+
       toast.success("Expense added successfully");
       refreshFn();
       toggleExpenseCard();
+      updateAccountBalance({
+        id: transaction.account_id,
+        amount: transaction.amount,
+      });
     } catch (e) {
       if (e.response && e.response.data.message) {
         toast.error(e.response.data.message);
@@ -131,7 +190,16 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Category</label>
+            <div className="flex items-center justify-between">
+              <label className="block text-gray-700">Category</label>
+              <ToggleSwitch
+                sizing="sm"
+                color="green"
+                checked={autoDetectCategory}
+                label="Auto-detect"
+                onChange={() => setAutoDetectCategory(!autoDetectCategory)}
+              />
+            </div>
             <select
               name="category"
               className="w-full px-3 py-2 border border-gray-300 rounded"
@@ -145,6 +213,16 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Date</label>
+            <input
+              type="date"
+              name="date"
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
           </div>
           <div className="flex flex-wrap gap-2">
             <Button color="failure" type="button" onClick={toggleExpenseCard}>

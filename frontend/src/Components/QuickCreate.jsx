@@ -7,12 +7,14 @@ import AccountCard from "../Components/AccountCard";
 import ExpenseCard from "../Components/ExpenseCard";
 import IncomeCard from "../Components/IncomeCard";
 import AddGoalCard from "../Components/AddGoalCard";
-
+import { useStore } from "../lib/utils";
 
 export default function QuickCreate({ refreshFn }) {
   const [isExpenseCardVisible, setIsExpenseCardVisible] = useState(false);
   const [isIncomeCardVisible, setIsIncomeCardVisible] = useState(false);
   const [isAccountCardVisible, setIsAccountCardVisible] = useState(false);
+
+  const updateDash = useStore((state) => state.updateDash);
 
   const toggleExpenseCard = () => {
     setIsExpenseCardVisible(!isExpenseCardVisible);
@@ -26,10 +28,10 @@ export default function QuickCreate({ refreshFn }) {
     setIsAccountCardVisible(!isAccountCardVisible);
   };
 
-  if (refreshFn === null) {
-    refreshFn = function () {};
+  if (!refreshFn) {
+    refreshFn = updateDash;
   }
-  
+
   return (
     <div className="flex flex-wrap justify-center gap-2 p-4">
       <Button.Group>
