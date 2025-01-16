@@ -12,6 +12,8 @@ class User(db.Model):
     accounts = db.relationship('Account', backref='owner', lazy='dynamic')
     goals = db.relationship('Goal', backref='owner', lazy='dynamic')
     categories = db.relationship('Category', backref='owner', lazy='dynamic')
+    reset_token = db.Column(db.String(100), unique=True, nullable=True)
+    reset_token_expiration = db.Column(db.DateTime, nullable=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

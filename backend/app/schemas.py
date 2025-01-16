@@ -32,6 +32,9 @@ class UserRegisterSchema(Schema):
         required=True, validate=validate.Length(min=8, max=128))
 
 
+class ResetPasswordSchema(Schema):
+    new_password = fields.Str(required=True, validate=validate.Length(min=6))
+
 class UserLoginSchema(Schema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)

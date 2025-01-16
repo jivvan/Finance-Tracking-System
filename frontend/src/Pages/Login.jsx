@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useStore } from "../lib/utils";
 import axios from "axios";
+import ResetPasswordModal from "../Components/ResetPasswordModal";
 
 function Login({ setIsAuthenticated }) {
   const [username, setUsername] = useState("");
@@ -129,7 +130,7 @@ function Login({ setIsAuthenticated }) {
                     </button>
                   </div>
                 </div>
-                {/* <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                   <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <Checkbox
@@ -146,13 +147,8 @@ function Login({ setIsAuthenticated }) {
                       </Label>
                     </div>
                   </div>
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div> */}
+                  <ResetPasswordModal />
+                </div>
                 <Button
                   disabled={loading}
                   isProcessing={loading}

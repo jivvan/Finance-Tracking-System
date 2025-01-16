@@ -1,12 +1,22 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-
+import os
+import random
+import secrets
+from datetime import datetime, timedelta
 from .utils import jwt_required_user_exists
 from .models import User, db, Account, Category
-from .schemas import UserRegisterSchema, UserLoginSchema, ForgotPasswordSchema
+from .schemas import UserRegisterSchema, UserLoginSchema, ForgotPasswordSchema, ResetPasswordSchema
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+import smtplib
+from email.mime.text import MIMEText
 
 auth = Blueprint('auth', __name__)
 
+# Zoho Mail SMTP configuration
+ZOHO_SMTP_SERVER = 'smtp.zoho.com'
+ZOHO_SMTP_PORT = 587
+ZOHO_EMAIL = 'jivanparajuli@jivanparajuli.com.np'
+ZOHO_PASSWORD = os.getenv('ZOHO_PASSWORD') 
 
 @auth.route('/register', methods=['POST'])
 def register():
@@ -107,6 +117,45 @@ def profile():
     }
     return jsonify({'user_details': user}), 200
 
+def generate_reset_token(user):
+    code = ''.join(random.choices('0123456789', k=6))
+    
+    user.reset_token = code
+    user.reset_token_expiration = datetime.utcnow() + timedelta(hours=1)
+    db.session.commit()
+    
+    return code
+
+
+def send_reset_email(user):
+    token = generate_reset_token(user)  
+
+    frontend_host = request.headers.get('Origin')  
+    if not frontend_host:
+        frontend_host = request.host_url 
+
+    subject = 'Password Reset Request'
+    body = f'''To reset your password, use the code:
+{token}
+
+This code will be valid for next 1 hour.
+
+If you did not make this request, simply ignore this email and no changes will be made.
+'''
+
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = ZOHO_EMAIL
+    msg['To'] = user.email
+
+    try:
+        with smtplib.SMTP(ZOHO_SMTP_SERVER, ZOHO_SMTP_PORT) as server:
+            server.starttls() 
+            server.login(ZOHO_EMAIL, ZOHO_PASSWORD) 
+            server.sendmail(ZOHO_EMAIL, [user.email], msg.as_string())  
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
 
 @auth.route('/forgot-password', methods=['POST'])
 def forgot_password():
@@ -118,5 +167,30 @@ def forgot_password():
     data = schema.load(request.json)
     email = data['email']
 
-    # Implement forgot password logic here
+    user = User.query.filter_by(email=email).first()
+    if user:
+        send_reset_email(user)
+
     return jsonify({'message': 'Password reset link sent'}), 200
+
+
+@auth.route('/reset-password/<token>', methods=['POST'])
+def reset_password(token):
+    user = User.query.filter_by(reset_token=token).first()
+    if not user or user.reset_token_expiration < datetime.utcnow():
+        return jsonify({'message': 'Invalid or expired token'}), 400
+
+    schema = ResetPasswordSchema()
+    errors = schema.validate(request.json)
+    if errors:
+        return jsonify(errors), 400
+
+    data = schema.load(request.json)
+    new_password = data['new_password']
+
+    user.set_password(new_password)
+    user.reset_token = None
+    user.reset_token_expiration = None
+    db.session.commit()
+
+    return jsonify({'message': 'Password reset successfully'}), 200
