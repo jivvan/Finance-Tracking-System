@@ -4,6 +4,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { HiChartBar, HiCurrencyDollar, HiUser, HiMenu } from "react-icons/hi";
 import { MdAccountBalance } from "react-icons/md";
 import { GoGoal } from "react-icons/go";
+import { BiCategory } from "react-icons/bi";
 
 const SidebarComponent = ({ setSidebarCollapsed }) => {
   const { pathname } = useLocation();
@@ -79,6 +80,17 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
             {!isCollapsed && "Goals"}
           </NavLink>
           <NavLink
+            to="/categories"
+            className={() =>
+              pathname === "/categories"
+                ? "text-blue-600 sidebar-items"
+                : "text-gray-700 sidebar-items"
+            }
+          >
+            <BiCategory  className="inline-block mr-2" />
+            {!isCollapsed && "Categories"}
+          </NavLink>
+          <NavLink
             to="/profile"
             className={() =>
               pathname === "/profile"
@@ -89,6 +101,7 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
             <HiUser className="inline-block mr-2" />
             {!isCollapsed && "Profile"}
           </NavLink>
+          
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>

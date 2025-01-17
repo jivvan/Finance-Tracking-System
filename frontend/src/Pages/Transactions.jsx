@@ -73,14 +73,6 @@ function Transactions() {
         <Card>
           <div className="flex flex-wrap items-center justify-between space-x-4">
             <h1 className="text-2xl font-bold">Transactions</h1>
-            {/* <div>
-              <Button
-                className="bg-green-600 border border-green-500 rounded-xl hover:bg-transparent hover:text-green-300"
-              >
-                <HiCurrencyDollar className="w-5 h-5 mr-2" />
-                ADD TRANSACTION
-              </Button>
-            </div> */}
           </div>
           <div className="flex flex-wrap items-center justify-between space-x-4">
             <TextInput
