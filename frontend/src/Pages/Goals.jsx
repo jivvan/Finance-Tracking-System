@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Card, Button, Label, Select, TextInput } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
@@ -14,6 +14,9 @@ import ContributionsCard from "../Components/ContributionsCard";
 import AddGoalCard from "../Components/AddGoalCard";
 import { GoGoal } from "react-icons/go";
 import { useStore } from "../lib/utils";
+import EditGoalCard from "../Components/EditGoalCard"; // Import EditGoalCard
+import DeleteGoalCard from "../Components/DeleteGoalCard"; // Import DeleteGoalCard
+
 export default function Goals() {
   const goals = useStore((state) => state.goals);
   const [showContributionsCard, setShowContributionsCard] = useState(false);
@@ -23,10 +26,37 @@ export default function Goals() {
     setSelectedGoal(goal);
     setShowContributionsCard(!showContributionsCard);
   };
-  const [showAddGoalCard, setShowAddGoalCard] = useState(false);
 
+  const [showAddGoalCard, setShowAddGoalCard] = useState(false);
   const toggleAddGoalCard = () => {
     setShowAddGoalCard(!showAddGoalCard);
+  };
+
+  const [showEditGoalCard, setShowEditGoalCard] = useState(false);
+  const toggleEditGoalCard = (goal = null) => {
+    setSelectedGoal(goal);
+    setShowEditGoalCard(!showEditGoalCard);
+  };
+
+  const [showDeleteGoalCard, setShowDeleteGoalCard] = useState(false);
+  const toggleDeleteGoalCard = (goal = null) => {
+    setSelectedGoal(goal);
+    setShowDeleteGoalCard(!showDeleteGoalCard);
+  };
+
+  const refreshGoals = async () => {
+    // Fetch goals from the API and update the state
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(`${API_URL}/api/goals`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      useStore.setState({ goals: response.data.goals });
+    } catch (error) {
+      console.error("Error fetching goals:", error);
+    }
   };
 
   return (
@@ -93,14 +123,31 @@ export default function Goals() {
                       <Button
                         size="xs"
                         className="text-white bg-blue-500"
-                        onClick={() => toggleContributionsCard(goal)}
+                        onClick={(e) => {
+                          toggleContributionsCard(goal);
+                          e.currentTarget.blur(); // Remove focus from the button
+                        }}
                       >
                         Contribute
                       </Button>
-                      <Button size="xs" className="text-white bg-green-500">
+                      <Button
+                        size="xs"
+                        className="text-white bg-green-500"
+                        onClick={(e) => {
+                          toggleEditGoalCard(goal);
+                          e.currentTarget.blur(); // Remove focus from the button
+                        }}
+                      >
                         Edit
                       </Button>
-                      <Button size="xs" className="text-white bg-red-500">
+                      <Button
+                        size="xs"
+                        className="text-white bg-red-500"
+                        onClick={(e) => {
+                          toggleDeleteGoalCard(goal);
+                          e.currentTarget.blur(); // Remove focus from the button
+                        }}
+                      >
                         Delete
                       </Button>
                     </TableCell>
@@ -111,11 +158,27 @@ export default function Goals() {
           </Table>
         </div>
       </main>
+
+      {/* Modals */}
       {showAddGoalCard && <AddGoalCard toggleAddGoalCard={toggleAddGoalCard} />}
       {showContributionsCard && (
         <ContributionsCard
           toggleContributionsCard={toggleContributionsCard}
           goal={selectedGoal}
+        />
+      )}
+      {showEditGoalCard && selectedGoal && ( // Ensure selectedGoal is defined
+        <EditGoalCard
+          goal={selectedGoal}
+          toggleEditGoalCard={toggleEditGoalCard}
+          refreshGoals={refreshGoals}
+        />
+      )}
+      {showDeleteGoalCard && selectedGoal && ( // Ensure selectedGoal is defined
+        <DeleteGoalCard
+          goal={selectedGoal}
+          toggleDeleteGoalCard={toggleDeleteGoalCard}
+          refreshGoals={refreshGoals}
         />
       )}
     </>
