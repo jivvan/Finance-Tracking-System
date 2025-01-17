@@ -15,7 +15,7 @@ import AddGoalCard from "../Components/AddGoalCard";
 import { GoGoal } from "react-icons/go";
 import { useStore } from "../lib/utils";
 import EditGoalCard from "../Components/EditGoalCard";
-import DeleteGoalCard from "../Components/DeleteGoalCard"; 
+import DeleteGoalCard from "../Components/DeleteGoalCard";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
@@ -23,7 +23,6 @@ export default function Goals() {
   const goals = useStore((state) => state.goals);
   const [showContributionsCard, setShowContributionsCard] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState(null);
-  const [showAddGoalCard, setShowAddGoalCard] = useState(false);
 
   const toggleContributionsCard = (goal = null) => {
     setSelectedGoal(goal);
@@ -35,7 +34,6 @@ export default function Goals() {
     setShowAddGoalCard(!showAddGoalCard);
   };
 
-
   const [showEditGoalCard, setShowEditGoalCard] = useState(false);
   const toggleEditGoalCard = (goal = null) => {
     setSelectedGoal(goal);
@@ -46,6 +44,12 @@ export default function Goals() {
   const toggleDeleteGoalCard = (goal = null) => {
     setSelectedGoal(goal);
     setShowDeleteGoalCard(!showDeleteGoalCard);
+  };
+
+  // Calculate progress percentage for each goal
+  const calculateProgress = (currentAmount, targetAmount) => {
+    if (targetAmount === 0) return 0; // Avoid division by zero
+    return Math.round((currentAmount / targetAmount) * 100);
   };
 
   const refreshGoals = async () => {
@@ -61,12 +65,6 @@ export default function Goals() {
     } catch (error) {
       console.error("Error fetching goals:", error);
     }
-
-  // Calculate progress percentage for each goal
-  const calculateProgress = (currentAmount, targetAmount) => {
-    if (targetAmount === 0) return 0; // Avoid division by zero
-    return Math.round((currentAmount / targetAmount) * 100);
-
   };
 
   return (
@@ -141,14 +139,22 @@ export default function Goals() {
                         >
                           Contribute
                         </Button>
-                        <Button size="xs" color="blue" onClick={(e) => {
-                          toggleEditGoalCard(goal);
-                        }}>
+                        <Button
+                          size="xs"
+                          color="blue"
+                          onClick={() => {
+                            toggleEditGoalCard(goal);
+                          }}
+                        >
                           Edit
                         </Button>
-                        <Button size="xs" color="failure" onClick={(e) => {
-                          toggleDeleteGoalCard(goal);
-                        }}>
+                        <Button
+                          size="xs"
+                          color="failure"
+                          onClick={() => {
+                            toggleDeleteGoalCard(goal);
+                          }}
+                        >
                           Delete
                         </Button>
                       </TableCell>
@@ -160,7 +166,6 @@ export default function Goals() {
           </Table>
         </div>
       </main>
-
       {/* Modals */}
       {showAddGoalCard && <AddGoalCard toggleAddGoalCard={toggleAddGoalCard} />}
       {showContributionsCard && (
@@ -169,20 +174,22 @@ export default function Goals() {
           goal={selectedGoal}
         />
       )}
-      {showEditGoalCard && selectedGoal && ( // Ensure selectedGoal is defined
-        <EditGoalCard
-          goal={selectedGoal}
-          toggleEditGoalCard={toggleEditGoalCard}
-          refreshGoals={refreshGoals}
-        />
-      )}
-      {showDeleteGoalCard && selectedGoal && ( // Ensure selectedGoal is defined
-        <DeleteGoalCard
-          goal={selectedGoal}
-          toggleDeleteGoalCard={toggleDeleteGoalCard}
-          refreshGoals={refreshGoals}
-        />
-      )}
+      {showEditGoalCard &&
+        selectedGoal && ( // Ensure selectedGoal is defined
+          <EditGoalCard
+            goal={selectedGoal}
+            toggleEditGoalCard={toggleEditGoalCard}
+            refreshGoals={refreshGoals}
+          />
+        )}
+      {showDeleteGoalCard &&
+        selectedGoal && ( // Ensure selectedGoal is defined
+          <DeleteGoalCard
+            goal={selectedGoal}
+            toggleDeleteGoalCard={toggleDeleteGoalCard}
+            refreshGoals={refreshGoals}
+          />
+        )}
     </>
   );
 }

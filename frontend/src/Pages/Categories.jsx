@@ -54,7 +54,7 @@ function Categories() {
         <QuickCreate />
         <Card>
           <div className="flex flex-wrap items-center justify-between space-x-4">
-            <h1 className="text-2xl font-bold">Categories</h1>
+            <h1 className="text-2xl font-bold dark:text-white">Categories</h1>
           </div>
         </Card>
         <div className="mt-6 overflow-x-auto">
