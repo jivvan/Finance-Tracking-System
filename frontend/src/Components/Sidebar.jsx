@@ -87,13 +87,14 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
           <NavLink
             to="/categories"
             className={() =>
-              pathname === "/categories"
-                ? "text-blue-600 sidebar-items"
-                : "text-gray-700 sidebar-items"
+              (isCollapsed ? "flex items-center justify-center" : "") +
+              (cleanPath === "/categories"
+                ? " text-blue-600 sidebar-items"
+                : " text-gray-700 dark:text-gray-300 sidebar-items")
             }
           >
-            <BiCategory  className="inline-block mr-2" />
-            {!isCollapsed && "Categories"}
+            <BiCategory size={24} className="inline-block" />
+            {!isCollapsed && <p className="ml-2">Categories</p>}
           </NavLink>
           <NavLink
             to="/profile"
@@ -107,7 +108,6 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
             <HiUser size={24} className="inline-block" />
             {!isCollapsed && <p className="ml-2">Profile</p>}
           </NavLink>
-          
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>

@@ -4,7 +4,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function EditGoalCard({ goal, toggleEditGoalCard, refreshGoals }) {
+export default function EditGoalCard({
+  goal,
+  toggleEditGoalCard,
+  refreshGoals,
+}) {
   // Ensure goal is defined before accessing its properties
   if (!goal) {
     return null; // Return null or a loading state if goal is undefined
@@ -52,8 +56,8 @@ export default function EditGoalCard({ goal, toggleEditGoalCard, refreshGoals })
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Edit Goal</h2>
+      <div className="p-6 bg-white rounded-lg dark:bg-gray-800 w-96">
+        <h2 className="mb-4 text-xl font-bold dark:text-white">Edit Goal</h2>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>

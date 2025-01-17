@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Button, Label, Select, TextInput, Table, Modal } from "flowbite-react";
-import { ToastContainer, toast } from "react-toastify";
+import {
+  Card,
+  Button,
+  Label,
+  Select,
+  TextInput,
+  Table,
+  Modal,
+} from "flowbite-react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuickCreate from "../Components/QuickCreate";
 import {
@@ -46,9 +54,13 @@ function Transactions() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState(null);
 
+  function refreshFn() {
+    fetchTransactions(1);
+    updateDash();
+  }
+
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // Fetch transactions
   const fetchTransactions = async (page = 1) => {
     const token = localStorage.getItem("token");
     setLoading(true);
@@ -62,14 +74,12 @@ function Transactions() {
           search_term: searchTerm, // Include search term in the request
         },
       });
-      console.log("API Response:", response.data); // Debugging: Log API response
       setTransactions(response.data.transactions);
       setPagination(response.data.pagination);
       setCurrentPage(response.data.pagination.page);
       setTotalPages(response.data.pagination.total_pages);
     } catch (error) {
       console.error("Error fetching transactions:", error);
-      toast.error("Failed to fetch transactions. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -79,12 +89,13 @@ function Transactions() {
     fetchTransactions(currentPage);
   }, [currentPage, searchTerm]); // Re-fetch when currentPage or searchTerm changes
 
-  // Function to handle page change
   const handlePageChange = (page) => {
-    console.log("Changing to page:", page); // Debugging: Log page change
     setCurrentPage(page);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // Update search term state
+  };
 
   // Function to get account name by account_id
   const getAccountName = (accountId) => {
@@ -173,8 +184,6 @@ function Transactions() {
       setIsDeleteModalOpen(false); // Close the confirmation modal
       setTransactionToDelete(null); // Reset the transaction to delete
     }
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); // Update search term state
   };
 
   const handleSearchSubmit = (e) => {
@@ -184,9 +193,8 @@ function Transactions() {
 
   return (
     <>
-      <ToastContainer /> {/* Add ToastContainer to display toasts */}
       <main className="p-4">
-        <QuickCreate refreshFn={fetchTransactions} />
+        <QuickCreate refreshFn={refreshFn} />
         <Card>
           <div className="flex flex-wrap items-center justify-between">
             <h1 className="text-2xl font-bold dark:text-white">Transactions</h1>
@@ -227,7 +235,7 @@ function Transactions() {
                 </TableRow>
               ) : transactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan="6" className="text-center">
+                  <TableCell colSpan="3" className="text-center">
                     No transactions found.
                   </TableCell>
                 </TableRow>
@@ -252,8 +260,12 @@ function Transactions() {
                     >
                       Rs. {transaction.amount}
                     </TableCell>
-                    <TableCell>{getAccountName(transaction.account_id)}</TableCell>
-                    <TableCell>{getCategoryName(transaction.category_id)}</TableCell>
+                    <TableCell>
+                      {getAccountName(transaction.account_id)}
+                    </TableCell>
+                    <TableCell>
+                      {getCategoryName(transaction.category_id)}
+                    </TableCell>
                     <TableCell>
                       <div style={{ display: "flex", gap: "8px" }}>
                         <Button
@@ -278,11 +290,9 @@ function Transactions() {
             </TableBody>
           </Table>
         </div>
+
         {/* Edit Modal */}
-        <Modal
-          show={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-        >
+        <Modal show={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
           <Modal.Header>Edit Transaction</Modal.Header>
           <Modal.Body>
             <form onSubmit={handleEditSubmit}>
@@ -357,10 +367,7 @@ function Transactions() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  color="red"
-                  onClick={confirmDelete}
-                >
+                <Button color="red" onClick={confirmDelete}>
                   Delete
                 </Button>
               </div>
