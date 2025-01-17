@@ -14,8 +14,10 @@ import ContributionsCard from "../Components/ContributionsCard";
 import AddGoalCard from "../Components/AddGoalCard";
 import { GoGoal } from "react-icons/go";
 import { useStore } from "../lib/utils";
+import EditGoalCard from "../Components/EditGoalCard";
+import DeleteGoalCard from "../Components/DeleteGoalCard"; 
 import { CircularProgressbar } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css"; // Import default styles
+import "react-circular-progressbar/dist/styles.css";
 
 export default function Goals() {
   const goals = useStore((state) => state.goals);
@@ -28,14 +30,43 @@ export default function Goals() {
     setShowContributionsCard(!showContributionsCard);
   };
 
+  const [showAddGoalCard, setShowAddGoalCard] = useState(false);
   const toggleAddGoalCard = () => {
     setShowAddGoalCard(!showAddGoalCard);
   };
+
+
+  const [showEditGoalCard, setShowEditGoalCard] = useState(false);
+  const toggleEditGoalCard = (goal = null) => {
+    setSelectedGoal(goal);
+    setShowEditGoalCard(!showEditGoalCard);
+  };
+
+  const [showDeleteGoalCard, setShowDeleteGoalCard] = useState(false);
+  const toggleDeleteGoalCard = (goal = null) => {
+    setSelectedGoal(goal);
+    setShowDeleteGoalCard(!showDeleteGoalCard);
+  };
+
+  const refreshGoals = async () => {
+    // Fetch goals from the API and update the state
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(`${API_URL}/api/goals`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      useStore.setState({ goals: response.data.goals });
+    } catch (error) {
+      console.error("Error fetching goals:", error);
+    }
 
   // Calculate progress percentage for each goal
   const calculateProgress = (currentAmount, targetAmount) => {
     if (targetAmount === 0) return 0; // Avoid division by zero
     return Math.round((currentAmount / targetAmount) * 100);
+
   };
 
   return (
@@ -110,10 +141,14 @@ export default function Goals() {
                         >
                           Contribute
                         </Button>
-                        <Button size="xs" color="blue">
+                        <Button size="xs" color="blue" onClick={(e) => {
+                          toggleEditGoalCard(goal);
+                        }}>
                           Edit
                         </Button>
-                        <Button size="xs" color="failure">
+                        <Button size="xs" color="failure" onClick={(e) => {
+                          toggleDeleteGoalCard(goal);
+                        }}>
                           Delete
                         </Button>
                       </TableCell>
@@ -125,11 +160,27 @@ export default function Goals() {
           </Table>
         </div>
       </main>
+
+      {/* Modals */}
       {showAddGoalCard && <AddGoalCard toggleAddGoalCard={toggleAddGoalCard} />}
       {showContributionsCard && (
         <ContributionsCard
           toggleContributionsCard={toggleContributionsCard}
           goal={selectedGoal}
+        />
+      )}
+      {showEditGoalCard && selectedGoal && ( // Ensure selectedGoal is defined
+        <EditGoalCard
+          goal={selectedGoal}
+          toggleEditGoalCard={toggleEditGoalCard}
+          refreshGoals={refreshGoals}
+        />
+      )}
+      {showDeleteGoalCard && selectedGoal && ( // Ensure selectedGoal is defined
+        <DeleteGoalCard
+          goal={selectedGoal}
+          toggleDeleteGoalCard={toggleDeleteGoalCard}
+          refreshGoals={refreshGoals}
         />
       )}
     </>
