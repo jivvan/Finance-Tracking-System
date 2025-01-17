@@ -1,15 +1,58 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Label, Select, TextInput } from "flowbite-react";
+import { Card, Button, Modal } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
 import { useStore } from "../lib/utils";
-import { MdAccountBalanceWallet } from "react-icons/md";
+import { MdAccountBalance, MdAccountBalanceWallet } from "react-icons/md";
 import AccountCard from "../Components/AccountCard";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function Accounts() {
   const accounts = useStore((state) => state.accounts);
+  const deleteAccount = useStore((state) => state.deleteAccount);
+  const updateDash = useStore((state) => state.updateDash);
   const [showAccountCard, setShowAccountCard] = useState(false);
-  const toggleAccountCard = () => {
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const toggleAccountCard = (account = null) => {
+    setSelectedAccount(account);
     setShowAccountCard(!showAccountCard);
+  };
+
+  const handleDeleteClick = (account) => {
+    setAccountToDelete(account);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    setLoading(true);
+    if (accountToDelete) {
+      try {
+        let response = await axios.delete(
+          import.meta.env.VITE_API_URL + `/api/accounts/${accountToDelete.id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        console.log(response);
+        // Remove the account from the store or refresh the list
+        setShowDeleteModal(false);
+        deleteAccount(accountToDelete.id);
+        updateDash();
+        toast.success("Account deleted successfully!");
+      } catch (error) {
+        toast.error("Failed to delete account.");
+        console.error("Failed to delete account:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -18,48 +61,27 @@ function Accounts() {
         <QuickCreate />
         <Card>
           <div className="flex flex-wrap items-center justify-between space-x-4">
-            <h1 className="text-2xl font-bold">Accounts</h1>
+            <h1 className="text-2xl font-bold dark:text-white">Accounts</h1>
             <div>
-              <Button
-                onClick={toggleAccountCard}
-               className="bg-green-600 border border-green-500 rounded-xl hover:bg-transparent hover:text-green-300">
+              <Button onClick={() => toggleAccountCard()} color="success">
                 <MdAccountBalanceWallet className="w-4 h-4 mr-3" />
                 ADD ACCOUNT
-                </Button>
+              </Button>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-between space-x-4">  
-            <TextInput
-              id="search"
-              type="text"
-              placeholder="Search..."
-              className="w-64"
-            />
-            <div className="flex items-center gap-2">
-              <Label htmlFor="sortby" className="text-gray-700">
-                Sort by:
-              </Label>
-              <Select id="sortby" className="w-48">
-                <option>Default</option>
-                <option>A-Z</option>
-                <option>Balance (lowest first)</option>
-                <option>Balance (highest first)</option>
-              </Select>
-            </div>
-          </div>
-
+        </Card>
+        <Card className="mt-6">
+          {accounts.length === 0 && (
+            <h2 className="text-center">No accounts found</h2>
+          )}
           <div className="flex flex-wrap justify-start gap-8 mt-8">
             {accounts.map((account, index) => (
               <Card
                 key={index}
                 className="flex flex-col items-center justify-center max-w-sm"
               >
-                <div className="flex items-center justify-center mb-4">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/6020/6020687.png" // Placeholder profile image
-                    alt="Profile"
-                    className="object-cover w-24 h-24 border border-gray-300 rounded-full"
-                  />
+                <div className="flex items-center justify-center mb-4 text-blue-500">
+                  <MdAccountBalance size={64} />
                 </div>
                 <h5 className="text-2xl font-bold tracking-tight text-center text-gray-900 dark:text-white">
                   {account.name}
@@ -67,30 +89,50 @@ function Accounts() {
                 <p className="font-normal text-center text-gray-700 dark:text-gray-400">
                   Balance: {account.balance}
                 </p>
-                <Button
-                  color="blue"
-                  className="mt-4 text-white bg-blue-500 hover:bg-blue-700"
-                >
-                  View Details
-                  <svg
-                    className="w-4 h-4 ml-2 -mr-1 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    color="blue"
+                    onClick={() => toggleAccountCard(account)}
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Button>
+                    Edit
+                  </Button>
+                  <Button
+                    color="failure"
+                    onClick={() => handleDeleteClick(account)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </Card>
             ))}
           </div>
         </Card>
       </main>
-      {showAccountCard && <AccountCard toggleAccountCard={toggleAccountCard} />}
+      {showAccountCard && (
+        <AccountCard
+          toggleAccountCard={toggleAccountCard}
+          account={selectedAccount}
+        />
+      )}
+      <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+        <Modal.Header>Confirm Delete</Modal.Header>
+        <Modal.Body className="dark:text-white">
+          Are you sure you want to delete this account?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="blue" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            isProcessing={loading}
+            disabled={loading}
+            color="failure"
+            onClick={confirmDelete}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

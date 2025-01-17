@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Label, Select, TextInput } from "flowbite-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableRow,
-} from "flowbite-react";
+import { Button, Label, Select, TextInput, Table } from "flowbite-react"; // Import Flowbite components
 import { useStore } from "../lib/utils";
 import { toast } from "react-toastify";
 
@@ -54,6 +46,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
   }, [API_URL, goal.id]);
 
   const handleAddContribution = async () => {
+    setError("");
     if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
       setError("Please enter a valid contribution amount.");
       return;
@@ -65,7 +58,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
       account_id: selectedAccount,
       amount: parseFloat(amount),
     };
-
+    setLoading(true);
     try {
       const response = await axios.post(
         `${API_URL}/api/contributions`,
@@ -101,12 +94,13 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
         setError("Failed to add contribution. Please try again.");
       }
     } catch (error) {
-      //   console.error("Error adding contribution:", error);
-      if (error.response.data.message) {
+      if (error.response?.data?.message) {
         setError(error.response.data.message);
       } else {
         setError("An error occurred while adding the contribution.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,13 +110,13 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
         className="absolute inset-0 bg-black opacity-50"
         onClick={toggleContributionsCard}
       ></div>
-      <div className="relative p-6 bg-white rounded shadow-lg w-96">
-        <h2 className="mb-4 text-xl font-bold">
+      <div className="relative p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96">
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
           Contribute to Goal: {goal.name}
         </h2>
 
         <div className="mb-4">
-          <Label htmlFor="account">Select Account</Label>
+          <Label htmlFor="account" value="Select Account" />
           <Select
             id="account"
             value={selectedAccount}
@@ -138,7 +132,7 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
         </div>
 
         <div className="mb-4">
-          <Label htmlFor="amount">Amount</Label>
+          <Label htmlFor="amount" value="Amount" />
           <TextInput
             id="amount"
             type="number"
@@ -152,31 +146,34 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
 
         <Button
           onClick={handleAddContribution}
-          className="text-white bg-green-500"
+          isProcessing={loading}
+          disabled={loading}
+          color="success"
+          className="w-full"
         >
           Add Contribution
         </Button>
 
         <div className="mt-6 overflow-x-auto max-h-96">
           <Table hoverable>
-            <TableHead>
-              <TableHeadCell>Date</TableHeadCell>
-              <TableHeadCell>Amount</TableHeadCell>
-              <TableHeadCell>Account</TableHeadCell>
-            </TableHead>
-            <TableBody>
+            <Table.Head>
+              <Table.HeadCell>Date</Table.HeadCell>
+              <Table.HeadCell>Amount</Table.HeadCell>
+              <Table.HeadCell>Account</Table.HeadCell>
+            </Table.Head>
+            <Table.Body>
               {loading ? (
-                <TableRow>
-                  <TableCell colSpan="3" className="text-center">
+                <Table.Row>
+                  <Table.Cell colSpan="3" className="text-center">
                     Loading...
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               ) : contributions.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan="3" className="text-center">
+                <Table.Row>
+                  <Table.Cell colSpan="3" className="text-center">
                     No contributions yet.
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               ) : (
                 contributions.map((contribution) => {
                   const accountName = accounts.find(
@@ -184,23 +181,26 @@ const ContributionsCard = ({ goal, toggleContributionsCard }) => {
                   )?.name;
 
                   return (
-                    <TableRow key={contribution.id}>
-                      <TableCell>
+                    <Table.Row key={contribution.id}>
+                      <Table.Cell>
                         {new Date(contribution.date).toLocaleString()}
-                      </TableCell>
-                      <TableCell>{contribution.amount}</TableCell>
-                      <TableCell>{accountName || "Unknown Account"}</TableCell>
-                    </TableRow>
+                      </Table.Cell>
+                      <Table.Cell>{contribution.amount}</Table.Cell>
+                      <Table.Cell>
+                        {accountName || "Unknown Account"}
+                      </Table.Cell>
+                    </Table.Row>
                   );
                 })
               )}
-            </TableBody>
+            </Table.Body>
           </Table>
         </div>
 
         <Button
           onClick={toggleContributionsCard}
-          className="mt-4 text-white bg-red-500"
+          color="failure"
+          className="w-full mt-4"
         >
           Close
         </Button>

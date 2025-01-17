@@ -28,11 +28,11 @@ class Account(db.Model):
     balance = db.Column(db.Float, default=0.0)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     transactions = db.relationship(
-        'Transaction', backref='account', lazy='dynamic')
+        'Transaction', backref='account', lazy='dynamic', cascade='all, delete-orphan'
+    )
     __table_args__ = (
         db.UniqueConstraint('name', 'user_id', name='uix_user_account_name'),
     )
-
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)

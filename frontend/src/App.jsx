@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useStore } from "./lib/utils";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Flowbite, DarkThemeToggle } from "flowbite-react";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -104,20 +105,22 @@ function App() {
 
   return (
     <div>
-      {loading ? <LoadingScreen /> : <AppRouter />}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition:Bounce
-      />
+      <Flowbite>
+        {loading ? <LoadingScreen /> : <AppRouter />}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition:Bounce
+        />
+      </Flowbite>
     </div>
   );
 }

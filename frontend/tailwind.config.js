@@ -2,6 +2,7 @@ import flowbite from "flowbite/plugin";
 import flowbite_react from "flowbite-react/tailwind";
 
 export default {
+  darkMode: "selector",
   content: [
     flowbite_react.content(),
     "./index.html",
@@ -9,10 +10,7 @@ export default {
     "./node_modules/flowbite/**/*.js", // Add this line
   ],
   theme: {
-    extend: {
-      
-
-    },
+    extend: {},
   },
   plugins: [flowbite, flowbite_react.plugin()],
 };

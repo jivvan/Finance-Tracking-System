@@ -80,7 +80,6 @@ export default function ResetPasswordModal() {
                     <Label htmlFor="code" value="Enter code" />
                   </div>
                   <TextInput
-                    color="blue"
                     id="code"
                     placeholder="Enter code you received in email"
                     value={code}
@@ -93,7 +92,6 @@ export default function ResetPasswordModal() {
                     <Label htmlFor="password" value="New Password" />
                   </div>
                   <TextInput
-                    color="blue"
                     id="password"
                     placeholder="*****"
                     type="password"
@@ -121,7 +119,6 @@ export default function ResetPasswordModal() {
                     <Label htmlFor="email" value="Your email" />
                   </div>
                   <TextInput
-                    color="blue"
                     id="email"
                     placeholder="name@company.com"
                     value={email}
