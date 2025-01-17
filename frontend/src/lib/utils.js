@@ -27,7 +27,23 @@ export const useStore = create((set) => ({
     set((state) => ({
       accounts: [...state.accounts, account].sort((a, b) => a.name > b.name),
     })),
+  deleteAccount: (accountId) =>
+    set((state) => ({
+      accounts: [...state.accounts.filter((acc) => acc.id !== accountId)],
+    })),
   setAccounts: (accounts) => set((state) => ({ accounts })),
+  updateAccount: (account) =>
+    set((state) => ({
+      accounts: [
+        ...state.accounts.map((acc) => {
+          if (acc.id === account.id) {
+            acc.name = account.name;
+            acc.balance = account.balance;
+          }
+          return acc;
+        }),
+      ],
+    })),
   updateAccountBalance: (change, type = "self") =>
     set((state) => ({
       accounts: [

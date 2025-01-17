@@ -12,8 +12,12 @@ const ExpensePrediction = ({ dashSummary }) => {
   if (predictions.message) {
     return (
       <Card>
-        <h2 className="text-lg font-semibold">Expense Prediction</h2>
-        There aren't enough expenses to make a prediction
+        <h2 className="text-lg font-semibold dark:text-white">
+          Expense Prediction
+        </h2>
+        <p className="text-gray-700 dark:text-gray-300">
+          There aren't enough expenses to make a prediction
+        </p>
       </Card>
     );
   }
@@ -81,11 +85,13 @@ const ExpensePrediction = ({ dashSummary }) => {
 
   return (
     <Card>
-      <h2 className="text-lg font-semibold">Expense Prediction</h2>
+      <h2 className="text-lg font-semibold dark:text-white">
+        Expense Prediction
+      </h2>
       <div className="w-full h-96">
         <Line data={data} options={options} />
       </div>
-      <p className="text-xs text-gray-500 ">
+      <p className="text-xs text-gray-500 dark:text-gray-700">
         *Only past 30 days data is considered
       </p>
     </Card>

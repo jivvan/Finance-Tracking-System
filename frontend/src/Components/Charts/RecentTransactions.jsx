@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "flowbite-react";
+import { Card, Table } from "flowbite-react";
 import { GiReceiveMoney, GiPayMoney } from "react-icons/gi";
 
 const RecentTransactions = ({ dashSummary }) => {
@@ -24,22 +24,28 @@ const RecentTransactions = ({ dashSummary }) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="mb-6 text-xl font-semibold text-gray-800">
+    <Card>
+      <h2 className="mb-6 text-xl font-semibold dark:text-white">
         Recent Transactions
       </h2>
       <Table>
         <Table.Head>
-          <Table.HeadCell className="text-gray-600">Date</Table.HeadCell>
-          <Table.HeadCell className="text-gray-600">Description</Table.HeadCell>
+          <Table.HeadCell className="text-gray-600 dark:text-gray-400">
+            Date
+          </Table.HeadCell>
+          <Table.HeadCell className="text-gray-600 dark:text-gray-400">
+            Description
+          </Table.HeadCell>
           {/* <Table.HeadCell className="text-gray-600">Category</Table.HeadCell> */}
-          <Table.HeadCell className="text-gray-600">Amount</Table.HeadCell>
+          <Table.HeadCell className="text-gray-600 dark:text-gray-400">
+            Amount
+          </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
           {transactions.map((transaction, index) => (
             <Table.Row
               key={index}
-              className="h-12 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
+              className="h-12 bg-white hover:bg-gray-50 dark:hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-800"
             >
               <Table.Cell className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {transaction.date}
@@ -58,7 +64,7 @@ const RecentTransactions = ({ dashSummary }) => {
       {transactions.length === 0 && (
         <p>Create income/expense transactions to see them here</p>
       )}
-    </div>
+    </Card>
   );
 };
 

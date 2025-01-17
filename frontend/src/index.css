@@ -5,3 +5,8 @@
 .sidebar-items {
   @apply flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700;
 }
+
+html,
+body {
+  @apply bg-gray-200 dark:bg-gray-900;
+}

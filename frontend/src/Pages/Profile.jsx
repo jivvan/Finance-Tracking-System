@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card } from "flowbite-react";
+import { Avatar, Badge, DarkThemeToggle, Button, Card } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
 import { useStore } from "../lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -16,11 +16,12 @@ const Profile = () => {
     <main className="p-4">
       <QuickCreate />
       <Card>
-        <h1 className="text-2xl font-bold">Profile</h1>
-
+        <h1 className="text-2xl font-bold dark:text-gray-200">Profile</h1>
+      </Card>
+      <Card className="mt-6">
         <div className="flex flex-col items-center space-y-4">
           <Avatar img="/user.png" rounded={true} size="xl" alt="User Avatar" />
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-semibold dark:text-gray-200">
             {profileDetails.username || "Username"}
           </h2>
           <Badge color="info">
@@ -33,6 +34,7 @@ const Profile = () => {
             {/* <Button color="info" size="sm" outline>
               Change Password
             </Button> */}
+            <DarkThemeToggle />
             <Button onClick={signOut} color="failure" size="sm">
               Sign Out
             </Button>

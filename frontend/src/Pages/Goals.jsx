@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Card, Button, Label, Select, TextInput } from "flowbite-react";
 import QuickCreate from "../Components/QuickCreate";
@@ -14,19 +14,28 @@ import ContributionsCard from "../Components/ContributionsCard";
 import AddGoalCard from "../Components/AddGoalCard";
 import { GoGoal } from "react-icons/go";
 import { useStore } from "../lib/utils";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css"; // Import default styles
+
 export default function Goals() {
   const goals = useStore((state) => state.goals);
   const [showContributionsCard, setShowContributionsCard] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState(null);
+  const [showAddGoalCard, setShowAddGoalCard] = useState(false);
 
   const toggleContributionsCard = (goal = null) => {
     setSelectedGoal(goal);
     setShowContributionsCard(!showContributionsCard);
   };
-  const [showAddGoalCard, setShowAddGoalCard] = useState(false);
 
   const toggleAddGoalCard = () => {
     setShowAddGoalCard(!showAddGoalCard);
+  };
+
+  // Calculate progress percentage for each goal
+  const calculateProgress = (currentAmount, targetAmount) => {
+    if (targetAmount === 0) return 0; // Avoid division by zero
+    return Math.round((currentAmount / targetAmount) * 100);
   };
 
   return (
@@ -35,34 +44,12 @@ export default function Goals() {
         <QuickCreate />
         <Card>
           <div className="flex flex-wrap items-center justify-between space-x-4">
-            <h1 className="text-2xl font-bold">Goals</h1>
+            <h1 className="text-2xl font-bold dark:text-gray-200">Goals</h1>
             <div>
-              <Button
-                onClick={toggleAddGoalCard}
-                className="bg-green-600 border border-green-500 rounded-xl hover:bg-transparent hover:text-green-300"
-              >
+              <Button onClick={toggleAddGoalCard} color="success">
                 <GoGoal className="w-5 h-5 mr-2" />
                 ADD GOAL
               </Button>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-between space-x-4">
-            <TextInput
-              id="search"
-              type="text"
-              placeholder="Search..."
-              className="w-64"
-            />
-            <div className="flex items-center gap-2">
-              <Label htmlFor="sortby" className="text-gray-700">
-                Sort by:
-              </Label>
-              <Select id="sortby" className="w-48">
-                <option>Default</option>
-                <option>A-Z</option>
-                <option>Balance (lowest first)</option>
-                <option>Balance (highest first)</option>
-              </Select>
             </div>
           </div>
         </Card>
@@ -72,40 +59,67 @@ export default function Goals() {
               <TableHeadCell>Goal Name</TableHeadCell>
               <TableHeadCell>Target Amount</TableHeadCell>
               <TableHeadCell>Current Amount</TableHeadCell>
+              <TableHeadCell>Progress</TableHeadCell>
               <TableHeadCell>Actions</TableHeadCell>
             </TableHead>
             <TableBody className="divide-y">
               {goals.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan="4" className="text-center">
+                  <TableCell colSpan="5" className="text-center">
                     No goals found.
                   </TableCell>
                 </TableRow>
               ) : (
-                goals.map((goal) => (
-                  <TableRow key={goal.id} className="bg-white">
-                    <TableCell className="font-medium text-gray-900 whitespace-nowrap">
-                      {goal.name}
-                    </TableCell>
-                    <TableCell>{goal.target_amount}</TableCell>
-                    <TableCell>{goal.current_amount}</TableCell>
-                    <TableCell className="flex gap-2">
-                      <Button
-                        size="xs"
-                        className="text-white bg-blue-500"
-                        onClick={() => toggleContributionsCard(goal)}
-                      >
-                        Contribute
-                      </Button>
-                      <Button size="xs" className="text-white bg-green-500">
-                        Edit
-                      </Button>
-                      <Button size="xs" className="text-white bg-red-500">
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                goals.map((goal) => {
+                  const progress = calculateProgress(
+                    goal.current_amount,
+                    goal.target_amount
+                  );
+                  return (
+                    <TableRow
+                      key={goal.id}
+                      className="bg-white dark:bg-gray-800"
+                    >
+                      <TableCell className="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        {goal.name}
+                      </TableCell>
+                      <TableCell>{goal.target_amount}</TableCell>
+                      <TableCell>{goal.current_amount}</TableCell>
+                      <TableCell>
+                        <div style={{ width: "50px", height: "50px" }}>
+                          <CircularProgressbar
+                            value={progress}
+                            text={`${progress}%`}
+                            styles={{
+                              path: {
+                                stroke: "#3B82F6", // Blue color for the progress bar
+                              },
+                              text: {
+                                fill: "#3B82F6", // Gray color for the text
+                                fontSize: "24px",
+                              },
+                            }}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="flex gap-2">
+                        <Button
+                          size="xs"
+                          color="success"
+                          onClick={() => toggleContributionsCard(goal)}
+                        >
+                          Contribute
+                        </Button>
+                        <Button size="xs" color="blue">
+                          Edit
+                        </Button>
+                        <Button size="xs" color="failure">
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               )}
             </TableBody>
           </Table>

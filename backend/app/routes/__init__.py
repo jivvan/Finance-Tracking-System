@@ -187,7 +187,7 @@ def predict_spending(user_id, account_id=None):
 
     if not transactions:
         return {'message': 'No transactions found for the specified category'}
-    if len(transactions) <= 1:
+    if len(transactions) <= 5:
         return {'message': f'Not enough transactions to make forecast: {len(transactions)}'}
 
     num_periods = min(len(transactions), 30)

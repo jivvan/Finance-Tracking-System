@@ -71,7 +71,7 @@ def update_account(account_id):
 
     db.session.commit()
 
-    return jsonify({'message': 'Account updated successfully'}), 200
+    return jsonify({'message': 'Account updated successfully'}), 200 
 
 
 @accounts.route('/<int:account_id>', methods=['DELETE'])

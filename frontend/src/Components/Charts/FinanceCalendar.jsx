@@ -70,16 +70,21 @@ const FinanceCalendar = ({ dashSummary }) => {
 
     const days = [];
     for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(<div key={`empty-${i}`} className="p-2 border rounded"></div>);
+      days.push(
+        <div
+          key={`empty-${i}`}
+          className="p-2 border rounded dark:border-gray-700"
+        ></div>
+      );
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
       const entry = monthData.find((e) => e.date.getDate() === i);
       days.push(
-        <div key={i} className="p-2 border rounded">
-          <div className="text-sm">
+        <div key={i} className="p-2 border rounded dark:border-gray-700">
+          <div className="text-sm dark:text-white">
             {i}
-            <span className="ml-4 text-xs text-gray-500">
+            <span className="ml-4 text-xs text-gray-500 dark:text-gray-400">
               {getDayName(new Date(currentYear, currentMonth, i).getDay())}
             </span>
           </div>
@@ -108,7 +113,9 @@ const FinanceCalendar = ({ dashSummary }) => {
 
   return (
     <Card className="p-4">
-      <h2 className="mb-4 text-lg font-semibold">Your Calendar</h2>
+      <h2 className="mb-4 text-lg font-semibold dark:text-white">
+        Your Calendar
+      </h2>
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={() => handleMonthChange("prev")}
@@ -116,7 +123,7 @@ const FinanceCalendar = ({ dashSummary }) => {
         >
           Previous
         </button>
-        <span>
+        <span className="dark:text-white">
           {getMonthName(currentMonth)} {currentYear}
         </span>
         <button
@@ -128,17 +135,22 @@ const FinanceCalendar = ({ dashSummary }) => {
       </div>
       <div className="hidden grid-cols-7 gap-2 mb-2 md:grid">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="font-semibold text-center text-gray-500">
+          <div
+            key={day}
+            className="font-semibold text-center text-gray-500 dark:text-gray-400"
+          >
             {day}
           </div>
         ))}
       </div>
       {renderCalendar()}
-      <p className="font-light text-md">
+      <p className="font-light text-md dark:text-white">
         <span className="text-green-500">Income</span> |{" "}
         <span className="text-red-500">Expense</span>
         <br />
-        <span className="text-xs">*Only past 90 days data is considered</span>
+        <span className="text-xs dark:text-white">
+          *Only past 90 days data is considered
+        </span>
       </p>
     </Card>
   );

@@ -72,7 +72,7 @@ function Login({ setIsAuthenticated }) {
         <div className="flex justify-end w-1/2 mr-32 ">
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-center">
+              <h1 className="text-3xl font-bold leading-tight tracking-tight text-center dark:text-white">
                 Log In
               </h1>
               <p className="text-sm font-light text-center text-gray-500 dark:text-gray-400">
@@ -131,22 +131,6 @@ function Login({ setIsAuthenticated }) {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <Checkbox
-                        id="remember"
-                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <Label
-                        htmlFor="remember"
-                        className="text-gray-500 dark:text-gray-300"
-                      >
-                        Remember me
-                      </Label>
-                    </div>
-                  </div>
                   <ResetPasswordModal />
                 </div>
                 <Button

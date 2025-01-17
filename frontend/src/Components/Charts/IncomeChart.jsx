@@ -1,6 +1,7 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { Card } from "flowbite-react";
 Chart.register(...registerables);
 
 const IncomeChart = ({ dashSummary }) => {
@@ -37,10 +38,12 @@ const IncomeChart = ({ dashSummary }) => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-lg font-semibold">Income Trends</h2>
+    <Card>
+      <h2 className="mb-4 text-lg font-semibold dark:text-white">
+        Income Trends
+      </h2>
       <Line data={data} />
-    </div>
+    </Card>
   );
 };
 

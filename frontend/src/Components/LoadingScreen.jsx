@@ -24,12 +24,12 @@ const LoadingScreen = () => {
         </div>
 
         {/* Loading Text */}
-        <p className="mt-4 text-lg font-semibold text-gray-700">
+        <p className="mt-4 text-lg font-semibold text-gray-700 dark:text-gray-300">
           Loading your financial data...
         </p>
 
         {/* Optional Subtext */}
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           Please wait while we prepare your dashboard.
         </p>
       </div>
