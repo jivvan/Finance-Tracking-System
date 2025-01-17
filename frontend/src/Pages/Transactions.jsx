@@ -11,7 +11,7 @@ import {
 } from "flowbite-react";
 import { useStore } from "../lib/utils";
 
-function Transactions() {
+export default function Transactions() {
   const transactions = useStore((state) => state.transactions);
   const setTransactions = useStore((state) => state.setTransactions);
   const updateDash = useStore((state) => state.updateDash);
@@ -186,5 +186,3 @@ function Transactions() {
     </>
   );
 }
-
-export default Transactions;
