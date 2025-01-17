@@ -8,6 +8,7 @@ import { BiCategory } from "react-icons/bi";
 
 const SidebarComponent = ({ setSidebarCollapsed }) => {
   const { pathname } = useLocation();
+  const cleanPath = pathname.toLowerCase();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toggleSidebar = () => {
@@ -21,15 +22,15 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
         isCollapsed ? "w-20" : ""
       }`}
     >
-      <div className="flex items-center justify-between p-4">
-        <div className="flex flex-col items-center w-full">
+      <div className="flex items-center justify-center p-4">
+        <div className="flex flex-col items-center justify-center w-full dark:invert">
           <img src="/logo.png" alt="Logo" className="w-32" />
         </div>
         <button
           onClick={toggleSidebar}
-          className="text-gray-500 focus:outline-none"
+          className="text-gray-500 dark:text-gray-400 focus:outline-none"
         >
-          <HiMenu className="w-6 h-6" />
+          <HiMenu size={32} />
         </button>
       </div>
       <hr className="my-4" />
@@ -38,46 +39,50 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
           <NavLink
             to="/dashboard"
             className={() =>
-              pathname === "/dashboard"
-                ? "text-blue-600 sidebar-items"
-                : "text-gray-700 sidebar-items"
+              (isCollapsed ? "flex items-center justify-center" : "") +
+              (cleanPath === "/dashboard"
+                ? " text-blue-600 sidebar-items"
+                : " text-gray-700 dark:text-gray-300 sidebar-items")
             }
           >
-            <HiChartBar className="inline-block mr-2" />
-            {!isCollapsed && "Dashboard"}
+            <HiChartBar size={24} className="inline-block" />
+            {!isCollapsed && <p className="ml-2">Dashboard</p>}
           </NavLink>
           <NavLink
             to="/transactions"
             className={() =>
-              pathname === "/transactions"
-                ? "text-blue-600 sidebar-items"
-                : "text-gray-700 sidebar-items"
+              (isCollapsed ? "flex items-center justify-center" : "") +
+              (cleanPath === "/transactions"
+                ? " text-blue-600 sidebar-items"
+                : " text-gray-700 dark:text-gray-300 sidebar-items")
             }
           >
-            <HiCurrencyDollar className="inline-block mr-2" />
-            {!isCollapsed && "Transactions"}
+            <HiCurrencyDollar size={24} className="inline-block" />
+            {!isCollapsed && <p className="ml-2">Transactions</p>}
           </NavLink>
           <NavLink
             to="/accounts"
             className={() =>
-              pathname === "/accounts"
-                ? "text-blue-600 sidebar-items"
-                : "text-gray-700 sidebar-items"
+              (isCollapsed ? "flex items-center justify-center" : "") +
+              (cleanPath === "/accounts"
+                ? " text-blue-600 sidebar-items"
+                : " text-gray-700 dark:text-gray-300 sidebar-items")
             }
           >
-            <MdAccountBalance className="inline-block mr-2" />
-            {!isCollapsed && "Accounts"}
+            <MdAccountBalance size={24} className="inline-block" />
+            {!isCollapsed && <p className="ml-2">Accounts</p>}
           </NavLink>
           <NavLink
             to="/goals"
             className={() =>
-              pathname === "/goals"
-                ? "text-blue-600 sidebar-items"
-                : "text-gray-700 sidebar-items"
+              (isCollapsed ? "flex items-center justify-center" : "") +
+              (cleanPath === "/goals"
+                ? " text-blue-600 sidebar-items"
+                : " text-gray-700 dark:text-gray-300 sidebar-items")
             }
           >
-            <GoGoal className="inline-block mr-2" />
-            {!isCollapsed && "Goals"}
+            <GoGoal size={24} className="inline-block" />
+            {!isCollapsed && <p className="ml-2">Goals</p>}
           </NavLink>
           <NavLink
             to="/categories"
@@ -93,13 +98,14 @@ const SidebarComponent = ({ setSidebarCollapsed }) => {
           <NavLink
             to="/profile"
             className={() =>
-              pathname === "/profile"
-                ? "text-blue-600 sidebar-items"
-                : "text-gray-700 sidebar-items"
+              (isCollapsed ? "flex items-center justify-center" : "") +
+              (cleanPath === "/profile"
+                ? " text-blue-600 sidebar-items"
+                : " text-gray-700 dark:text-gray-300 sidebar-items")
             }
           >
-            <HiUser className="inline-block mr-2" />
-            {!isCollapsed && "Profile"}
+            <HiUser size={24} className="inline-block" />
+            {!isCollapsed && <p className="ml-2">Profile</p>}
           </NavLink>
           
         </Sidebar.ItemGroup>

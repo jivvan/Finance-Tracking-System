@@ -12,7 +12,6 @@ import {
   TableRow,
 } from "flowbite-react";
 import { useStore } from "../lib/utils";
-import { HiCurrencyDollar } from "react-icons/hi";
 
 function Transactions() {
   const transactions = useStore((state) => state.transactions);
@@ -24,6 +23,7 @@ function Transactions() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [pagination, setPagination] = useState({
     has_next: false,
     has_prev: false,
@@ -59,6 +59,7 @@ function Transactions() {
         },
         params: {
           page,
+          search_term: searchTerm, // Include search term in the request
         },
       });
       console.log("API Response:", response.data); // Debugging: Log API response
@@ -76,13 +77,14 @@ function Transactions() {
 
   useEffect(() => {
     fetchTransactions(currentPage);
-  }, [currentPage]); // Fetch transactions when currentPage changes
+  }, [currentPage, searchTerm]); // Re-fetch when currentPage or searchTerm changes
 
   // Function to handle page change
   const handlePageChange = (page) => {
     console.log("Changing to page:", page); // Debugging: Log page change
     setCurrentPage(page);
   };
+
 
   // Function to get account name by account_id
   const getAccountName = (accountId) => {
@@ -171,6 +173,13 @@ function Transactions() {
       setIsDeleteModalOpen(false); // Close the confirmation modal
       setTransactionToDelete(null); // Reset the transaction to delete
     }
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // Update search term state
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault(); // Prevent form submission
+    fetchTransactions(1); // Reset to page 1 when searching
   };
 
   return (
@@ -179,27 +188,24 @@ function Transactions() {
       <main className="p-4">
         <QuickCreate refreshFn={fetchTransactions} />
         <Card>
-          <div className="flex flex-wrap items-center justify-between space-x-4">
-            <h1 className="text-2xl font-bold">Transactions</h1>
-          </div>
-          <div className="flex flex-wrap items-center justify-between space-x-4">
-            <TextInput
-              id="search"
-              type="text"
-              placeholder="Search..."
-              className="w-64"
-            />
-            <div className="flex items-center gap-2">
-              <Label htmlFor="sortby" className="text-gray-700">
-                Sort by:
-              </Label>
-              <Select id="sortby" className="w-48">
-                <option>Default</option>
-                <option>A-Z</option>
-                <option>Amount (lowest first)</option>
-                <option>Amount (highest first)</option>
-              </Select>
-            </div>
+          <div className="flex flex-wrap items-center justify-between">
+            <h1 className="text-2xl font-bold dark:text-white">Transactions</h1>
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex items-center gap-2"
+            >
+              <TextInput
+                id="search"
+                type="text"
+                placeholder="Search..."
+                className="w-64"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              <Button type="submit" color="blue">
+                Search
+              </Button>
+            </form>
           </div>
         </Card>
         <div className="mt-6 overflow-x-auto">
@@ -227,8 +233,11 @@ function Transactions() {
                 </TableRow>
               ) : (
                 transactions.map((transaction) => (
-                  <TableRow key={transaction.id} className="bg-white">
-                    <TableCell className="font-medium text-gray-900 whitespace-nowrap">
+                  <TableRow
+                    key={transaction.id}
+                    className="bg-white dark:bg-gray-800"
+                  >
+                    <TableCell className="font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
                       {transaction.description}
                     </TableCell>
                     <TableCell>
@@ -269,7 +278,6 @@ function Transactions() {
             </TableBody>
           </Table>
         </div>
-
         {/* Edit Modal */}
         <Modal
           show={isEditModalOpen}

@@ -43,7 +43,7 @@ function AppRouter() {
       <div
         className={
           (dashView ? (sidebarCollapsed ? "ml-64" : "ml-20") : "") +
-          " transition-all duration-300 bg-gray-200"
+          " transition-all duration-300 bg-gray-200 dark:bg-gray-900"
         }
       >
         <Routes>

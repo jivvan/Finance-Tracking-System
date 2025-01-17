@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button } from "flowbite-react";
+import { Button, TextInput, Textarea, Select, Label } from "flowbite-react"; // Import Flowbite components
 import { useStore } from "../lib/utils";
 
 export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
@@ -116,35 +116,37 @@ export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
         className="absolute inset-0 bg-black opacity-50"
         onClick={toggleIncomeCard}
       ></div>
-      <div className="relative p-6 bg-white rounded shadow-lg w-96">
-        <h2 className="mb-4 text-xl font-bold">Add Income</h2>
+      <div className="relative p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96">
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
+          Add Income
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700">Amount</label>
-            <input
+            <Label htmlFor="amount" value="Amount" />
+            <TextInput
+              id="amount"
               type="number"
-              name="amount"
-              className="w-full px-3 py-2 border border-gray-300 rounded"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
+              required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Description</label>
-            <textarea
-              name="description"
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+            <Label htmlFor="description" value="Description" />
+            <Textarea
+              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Account</label>
-            <select
-              name="account"
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+            <Label htmlFor="account" value="Account" />
+            <Select
+              id="account"
               value={selectedAccount}
               onChange={(e) => setSelectedAccount(e.target.value)}
+              required
             >
               <option value="">Select Account</option>
               {accounts.map((account) => (
@@ -152,15 +154,15 @@ export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
                   {account.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Category</label>
-            <select
-              name="category"
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+            <Label htmlFor="category" value="Category" />
+            <Select
+              id="category"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
+              required
             >
               <option value="">Select Category</option>
               {categories.map((category) => (
@@ -168,16 +170,16 @@ export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
                   {category.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Date</label>
-            <input
+            <Label htmlFor="date" value="Date" />
+            <TextInput
+              id="date"
               type="date"
-              name="date"
-              className="w-full px-3 py-2 border border-gray-300 rounded"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-wrap gap-2">

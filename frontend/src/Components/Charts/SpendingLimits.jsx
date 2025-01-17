@@ -16,13 +16,15 @@ const SpendingLimits = ({ dashSummary }) => {
   }));
   return (
     <Card className="p-4">
-      <h2 className="mb-4 text-lg font-semibold">Spending Limits</h2>
+      <h2 className="mb-4 text-lg font-semibold dark:text-white">
+        Spending Limits
+      </h2>
       <>
         {limits
           .sort((a, b) => a.limit / a.spent > b.limit / b.spent)
           .slice(0, 3)
           .map((limit, index) => (
-            <div key={index} className="mb-4">
+            <div key={index} className="mb-4 text-gray-800 dark:text-gray-200">
               <div className="flex justify-between mb-2">
                 <span>{limit.name}</span>
                 <span>
@@ -43,7 +45,9 @@ const SpendingLimits = ({ dashSummary }) => {
           ))}
       </>
       {limits.length === 0 ? (
-        <p>Set limits on categories to see them here</p>
+        <p className="text-gray-800 dark:text-gray-200">
+          Set limits on categories to see them here
+        </p>
       ) : (
         <Link to="/categories">
           <div className="w-max">

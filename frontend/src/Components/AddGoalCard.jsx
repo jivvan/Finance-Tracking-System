@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button } from "flowbite-react";
+import { Button, TextInput, Label } from "flowbite-react"; // Import Flowbite components
 import { useStore } from "../lib/utils";
 
 export default function AddGoalCard({ toggleAddGoalCard }) {
@@ -53,28 +53,29 @@ export default function AddGoalCard({ toggleAddGoalCard }) {
         className="absolute inset-0 bg-black opacity-50"
         onClick={toggleAddGoalCard}
       ></div>
-      <div className="relative p-6 bg-white rounded shadow-lg w-96">
-        <h2 className="mb-4 text-xl font-bold">Add Goal</h2>
+      <div className="relative p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96">
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
+          Add Goal
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700">Goal Name</label>
-            <input
-              value={name}
-              required
+            <Label htmlFor="goalName" value="Goal Name" />
+            <TextInput
+              id="goalName"
               type="text"
-              name=""
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Target Amount</label>
-            <input
+            <Label htmlFor="targetAmount" value="Target Amount" />
+            <TextInput
+              id="targetAmount"
               type="number"
               value={targetAmount}
-              name=""
-              className="w-full px-3 py-2 border border-gray-300 rounded"
               onChange={(e) => setTargetAmount(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-wrap gap-2">

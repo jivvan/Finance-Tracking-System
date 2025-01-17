@@ -80,7 +80,7 @@ const Dashboard = () => {
           <div className="mt-4">
             <RecentTransactions dashSummary={dashSummary} />
           </div>
-          <hr className="mt-4 border border-gray-300 rounded-lg" />
+          <hr className="mt-4 border border-gray-300 rounded-lg dark:border-gray-700" />
           <div className="mt-4">
             <ExpensePrediction dashSummary={dashSummary} />
           </div>

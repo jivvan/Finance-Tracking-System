@@ -1,6 +1,7 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { Card } from "flowbite-react";
 Chart.register(...registerables);
 
 const OverviewChart = ({ dashSummary }) => {
@@ -31,10 +32,12 @@ const OverviewChart = ({ dashSummary }) => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-lg font-semibold">Financial Overview</h2>
+    <Card>
+      <h2 className="mb-4 text-lg font-semibold dark:text-white">
+        Financial Overview
+      </h2>
       <Bar data={data} />
-    </div>
+    </Card>
   );
 };
 

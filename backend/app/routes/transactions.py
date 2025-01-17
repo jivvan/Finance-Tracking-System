@@ -7,25 +7,32 @@ from ..schemas import TransactionCreateSchema, TransactionUpdateSchema, Predicti
 
 transactions = Blueprint('transactions', __name__)
 
-
 @transactions.route('/', methods=['GET'])
 @jwt_required_user_exists
 def get_transactions():
     user_id = get_jwt_identity()
 
-    # Get pagination parameters from query string
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page', default=10, type=int)
+    search_term = request.args.get('search_term', default=None, type=str)
 
-    # Fetch paginated transactions
     accounts = Account.query.filter_by(user_id=user_id).all()
     account_ids = [account.id for account in accounts]
-    transactions_query = Transaction.query.filter(
-        Transaction.account_id.in_(account_ids)).order_by(Transaction.date.desc())
-    paginated_transactions = transactions_query.paginate(
-        page=page, per_page=per_page, error_out=False)
 
-    # Prepare the response
+    transactions_query = Transaction.query.filter(
+        Transaction.account_id.in_(account_ids)
+    )
+
+    if search_term:
+        transactions_query = transactions_query.filter(
+            Transaction.description.ilike(f'%{search_term}%')
+        )
+
+    transactions_query = transactions_query.order_by(Transaction.date.desc())
+    paginated_transactions = transactions_query.paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
     transactions_list = [
         {
             'id': t.id,
@@ -38,7 +45,6 @@ def get_transactions():
         for t in paginated_transactions.items
     ]
 
-    # Include pagination metadata in the response
     response = {
         'transactions': transactions_list,
         'pagination': {
@@ -54,7 +60,6 @@ def get_transactions():
     }
 
     return jsonify(response), 200
-
 
 @transactions.route('/', methods=['POST'])
 @jwt_required_user_exists

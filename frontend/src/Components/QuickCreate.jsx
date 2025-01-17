@@ -35,24 +35,15 @@ export default function QuickCreate({ refreshFn }) {
   return (
     <div className="flex flex-wrap justify-center gap-2 p-4">
       <Button.Group>
-        <Button
-          onClick={toggleExpenseCard}
-          className="bg-red-500 border border-red-500 rounded-r-none hover:bg-transparent hover:text-red-500"
-        >
+        <Button onClick={toggleExpenseCard} color="failure">
           <GiPayMoney className="w-4 h-4 mr-3" />
           Add Expense
         </Button>
-        <Button
-          onClick={toggleIncomeCard}
-          className="bg-green-500 border border-green-500 hover:bg-transparent hover:text-green-500"
-        >
+        <Button onClick={toggleIncomeCard} color="success">
           <GiReceiveMoney className="w-4 h-4 mr-3" />
           Add Income
         </Button>
-        <Button
-          onClick={toggleAccountCard}
-          className="bg-blue-500 border border-blue-500 rounded-l-none hover:bg-transparent hover:text-blue-500"
-        >
+        <Button onClick={toggleAccountCard} color="blue">
           <MdAccountBalanceWallet className="w-4 h-4 mr-3" />
           Add Account
         </Button>
@@ -67,7 +58,10 @@ export default function QuickCreate({ refreshFn }) {
         <IncomeCard refreshFn={refreshFn} toggleIncomeCard={toggleIncomeCard} />
       )}
       {isAccountCardVisible && (
-        <AccountCard toggleAccountCard={toggleAccountCard} />
+        <AccountCard
+          refreshFn={refreshFn}
+          toggleAccountCard={toggleAccountCard}
+        />
       )}
     </div>
   );
