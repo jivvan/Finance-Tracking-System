@@ -16,6 +16,7 @@ import Sidebar from "./Components/Sidebar";
 import Goals from "./Pages/Goals";
 import ProtectedRoute from "./ProtectedRoute";
 import Transactions from "./Pages/Transactions";
+import Categories from "./Pages/Categories";
 import PageNotFound from "./Pages/PageNotFound";
 
 function AppRouter() {
@@ -71,6 +72,7 @@ function AppRouter() {
           />
           <Route path="/goals" element={<ProtectedRoute element={Goals} />} />
           <Route path="*" element={<PageNotFound />} />
+          <Route path="/categories" element={<ProtectedRoute element={Categories}/>}/>
         </Routes>
       </div>
     </>
