@@ -118,10 +118,13 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
       toast.success("Expense added successfully");
       refreshFn();
       toggleExpenseCard();
-      updateAccountBalance({
-        id: transaction.account_id,
-        amount: transaction.amount,
-      });
+      updateAccountBalance(
+        {
+          id: transaction.account_id,
+          amount: transaction.amount,
+        },
+        "self"
+      );
     } catch (e) {
       if (e.response && e.response.data.message) {
         toast.error(e.response.data.message);
