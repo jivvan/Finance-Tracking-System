@@ -44,7 +44,7 @@ export const useStore = create((set) => ({
         }),
       ],
     })),
-  updateAccountBalance: (change, type = "self") =>
+  updateAccountBalance: (change, type) =>
     set((state) => ({
       accounts: [
         ...state.accounts.map((acc) => {
@@ -53,11 +53,13 @@ export const useStore = create((set) => ({
               acc.balance += parseFloat(change.amount);
             }
           } else if (type === "transfer") {
+            change.from = parseInt(change.from);
+            change.to = parseInt(change.to);
             if (acc.id === change.from) {
               acc.balance -= parseFloat(change.amount);
             }
             if (acc.id === change.to) {
-              acc.balance += change.amount;
+              acc.balance += parseFloat(change.amount);
             }
           }
           acc = { ...acc };
@@ -78,6 +80,18 @@ export const useStore = create((set) => ({
             goal.current_amount += change.amount;
           }
           return goal;
+        }),
+      ],
+    })),
+  updateGoal: (goal) =>
+    set((state) => ({
+      goals: [
+        ...state.goals.map((g) => {
+          if (g.id === goal.id) {
+            g.name = goal.name;
+            g.target_amount = parseFloat(goal.target_amount);
+          }
+          return g;
         }),
       ],
     })),

@@ -3,12 +3,9 @@ import { Button, TextInput, Label } from "flowbite-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useStore } from "../lib/utils";
 
-export default function EditGoalCard({
-  goal,
-  toggleEditGoalCard,
-  refreshGoals,
-}) {
+export default function EditGoalCard({ goal, toggleEditGoalCard }) {
   // Ensure goal is defined before accessing its properties
   if (!goal) {
     return null; // Return null or a loading state if goal is undefined
@@ -17,8 +14,8 @@ export default function EditGoalCard({
   const [formData, setFormData] = useState({
     name: goal.name,
     target_amount: goal.target_amount,
-    current_amount: goal.current_amount,
   });
+  const updateGoal = useStore((state) => state.updateGoal);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -45,7 +42,10 @@ export default function EditGoalCard({
       );
       if (response.status === 200) {
         toast.success("Goal updated successfully!");
-        refreshGoals(); // Refresh the goals list
+        updateGoal({
+          id: goal.id,
+          ...formData,
+        });
         toggleEditGoalCard(); // Close the modal
       }
     } catch (error) {
@@ -77,17 +77,6 @@ export default function EditGoalCard({
                 name="target_amount"
                 type="number"
                 value={formData.target_amount}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="current_amount">Current Amount</Label>
-              <TextInput
-                id="current_amount"
-                name="current_amount"
-                type="number"
-                value={formData.current_amount}
                 onChange={handleInputChange}
                 required
               />
