@@ -49,10 +49,8 @@ const SpendingLimits = ({ dashSummary }) => {
           Set limits on categories to see them here
         </p>
       ) : (
-        <Link to="/categories">
-          <div className="w-max">
-            <Badge>View all</Badge>
-          </div>
+        <Link className="flex" to="/categories">
+          <Badge color="blue">View all</Badge>
         </Link>
       )}
     </Card>

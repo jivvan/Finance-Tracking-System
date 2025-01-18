@@ -11,52 +11,28 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useStore } from "../lib/utils";
 
+const getLocalDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
-  const [accounts, setAccounts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const accounts = useStore((state) => state.accounts);
+  const allCategories = useStore((state) => state.categories);
+  const categories = allCategories.filter((c) => c.category_type === "expense");
+
   const [selectedAccount, setSelectedAccount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]); // Default to today's date
+  const [date, setDate] = useState(getLocalDate());
   const [loading, setLoading] = useState(false);
   const [autoDetectCategory, setAutoDetectCategory] = useState(true); // Toggle state
 
   const updateAccountBalance = useStore((state) => state.updateAccountBalance);
-
-  useEffect(() => {
-    const fetchAccountsAndCategories = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const accountsResponse = await axios.get(
-          import.meta.env.VITE_API_URL + "/api/accounts",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setAccounts(accountsResponse.data);
-
-        const categoriesResponse = await axios.get(
-          import.meta.env.VITE_API_URL + "/api/categories",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCategories(
-          categoriesResponse.data.filter((c) => c.category_type === "expense")
-        );
-      } catch (e) {
-        toast.error("Failed to fetch data");
-      }
-    };
-
-    fetchAccountsAndCategories();
-  }, []);
 
   // Function to predict category based on description
   const predictCategory = async (description) => {
@@ -113,15 +89,20 @@ export default function ExpenseCard({ refreshFn, toggleExpenseCard }) {
     setLoading(true);
 
     try {
+      // Get the current time in "HH:MM:SS" format
+      const now = new Date();
+      const timeString = now.toLocaleTimeString().split(" ")[0]; // Extracts "HH:MM:SS"
+
       // Format the date as "YYYY-MM-DD HH:MM:SS"
-      const formattedDate = `${date} 00:00:00`; // Append "00:00:00" for time
+      const formattedDate = `${date} ${timeString}`; // Append the current time
+      console.log(formattedDate);
 
       const transaction = {
         account_id: parseInt(selectedAccount),
-        amount: amount * -1,
+        amount: amount * -1, // Assuming this is an expense
         description,
         category_id: selectedCategory,
-        date: formattedDate, // Use the formatted date
+        date: formattedDate, // Use the formatted date with current time
       };
 
       const response = await axios.post(

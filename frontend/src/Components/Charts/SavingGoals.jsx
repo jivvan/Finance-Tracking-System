@@ -35,6 +35,9 @@ const SavingGoals = () => {
               />
             </div>
           ))}
+          <Link className="flex" to="/goals">
+            <Badge color="blue">View all</Badge>
+          </Link>
         </>
       ) : (
         <p className="dark:text-gray-200">
