@@ -7,7 +7,6 @@ import {
   Select,
   TextInput,
   Table,
-  Modal,
 } from "flowbite-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,7 +31,7 @@ function Transactions() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState({
     has_next: false,
     has_prev: false,
@@ -72,7 +71,7 @@ function Transactions() {
         },
         params: {
           page,
-          search_term: searchTerm, // Include search term in the request
+          search_term: searchTerm,
         },
       });
       setTransactions(response.data.transactions);
@@ -88,29 +87,26 @@ function Transactions() {
 
   useEffect(() => {
     fetchTransactions(currentPage);
-  }, [currentPage, searchTerm]); // Re-fetch when currentPage or searchTerm changes
+  }, [currentPage, searchTerm]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); // Update search term state
+    setSearchTerm(e.target.value);
   };
 
-  // Function to get account name by account_id
   const getAccountName = (accountId) => {
     const account = accounts.find((acc) => acc.id === accountId);
     return account ? account.name : "Unknown Account";
   };
 
-  // Function to get category name by category_id
   const getCategoryName = (categoryId) => {
     const category = categories.find((cat) => cat.id === categoryId);
     return category ? category.name : "Unknown Category";
   };
 
-  // Function to handle Edit button click
   const handleEditClick = (transaction) => {
     setEditingTransaction(transaction);
     setFormData({
@@ -122,7 +118,6 @@ function Transactions() {
     setIsEditModalOpen(true);
   };
 
-  // Function to handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -131,7 +126,6 @@ function Transactions() {
     });
   };
 
-  // Function to handle form submission
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -171,13 +165,11 @@ function Transactions() {
     }
   };
 
-  // Function to handle Delete button click
   const handleDeleteClick = (transactionId) => {
     setTransactionToDelete(parseInt(transactionId));
     setIsDeleteModalOpen(true); // Open the confirmation modal
   };
 
-  // Function to confirm deletion
   const confirmDelete = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -208,14 +200,14 @@ function Transactions() {
       console.error("Error deleting transaction:", error);
       toast.error("Failed to delete transaction. Please try again.");
     } finally {
-      setIsDeleteModalOpen(false); // Close the confirmation modal
-      setTransactionToDelete(null); // Reset the transaction to delete
+      setIsDeleteModalOpen(false);
+      setTransactionToDelete(null);
     }
   };
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault(); // Prevent form submission
-    fetchTransactions(1); // Reset to page 1 when searching
+    e.preventDefault();
+    fetchTransactions(1);
   };
 
   return (
@@ -306,7 +298,7 @@ function Transactions() {
                           Edit
                         </Button>
                         <Button
-                          color="red"
+                          color="failure"
                           size="xs"
                           onClick={() => handleDeleteClick(transaction.id)}
                         >
@@ -320,90 +312,6 @@ function Transactions() {
             </TableBody>
           </Table>
         </div>
-
-        {/* Edit Modal */}
-        <Modal show={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-          <Modal.Header>Edit Transaction</Modal.Header>
-          <Modal.Body>
-            <form onSubmit={handleEditSubmit}>
-              <div className="space-y-4">
-                <TextInput
-                  name="description"
-                  label="Description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  required
-                />
-                <TextInput
-                  name="amount"
-                  label="Amount"
-                  type="number"
-                  value={formData.amount}
-                  onChange={handleInputChange}
-                  required
-                />
-                <Select
-                  name="account_id"
-                  label="Account"
-                  value={formData.account_id}
-                  onChange={handleInputChange}
-                  required
-                >
-                  {accounts.map((account) => (
-                    <option key={account.id} value={account.id}>
-                      {account.name}
-                    </option>
-                  ))}
-                </Select>
-                <Select
-                  name="category_id"
-                  label="Category"
-                  value={formData.category_id}
-                  onChange={handleInputChange}
-                  required
-                >
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-              <div className="flex justify-end mt-4">
-                <Button type="submit" color="blue">
-                  Save Changes
-                </Button>
-              </div>
-            </form>
-          </Modal.Body>
-        </Modal>
-
-        {/* Delete Confirmation Modal */}
-        <Modal
-          show={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
-          size="md"
-        >
-          <Modal.Header>Confirm Delete</Modal.Header>
-          <Modal.Body>
-            <div className="text-center">
-              <p className="text-lg text-gray-700">
-                Are you sure you want to delete this transaction?
-              </p>
-              <div className="flex justify-center gap-4 mt-6">
-                <Button
-                  color="gray"
-                  onClick={() => setIsDeleteModalOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button color="red" onClick={confirmDelete}>
-                  Delete
-                </Button>
-              </div>
-            </div>
-          </Modal.Body>
-        </Modal>
 
         {/* Pagination Section */}
         <div className="flex items-center justify-center mt-4">
@@ -439,6 +347,110 @@ function Transactions() {
           </nav>
         </div>
       </main>
+
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded-lg dark:bg-gray-800 w-96">
+            <h2 className="mb-4 text-xl font-bold dark:text-white">
+              Edit Transaction
+            </h2>
+            <form onSubmit={handleEditSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <TextInput
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="amount">Amount</Label>
+                  <TextInput
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    value={formData.amount}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="account_id">Account</Label>
+                  <Select
+                    id="account_id"
+                    name="account_id"
+                    value={formData.account_id}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    {accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="category_id">Category</Label>
+                  <Select
+                    id="category_id"
+                    name="category_id"
+                    value={formData.category_id}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              </div>
+              <div className="flex justify-end gap-4 mt-6">
+                <Button
+                  color="gray"
+                  onClick={() => setIsEditModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" color="blue">
+                  Save Changes
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded-lg dark:bg-gray-800 w-96">
+            <h2 className="mb-4 text-xl font-bold dark:text-white">
+              Confirm Delete
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300">
+              Are you sure you want to delete this transaction?
+            </p>
+            <div className="flex justify-end gap-4 mt-6">
+              <Button
+                color="blue"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button color="failure" onClick={confirmDelete}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

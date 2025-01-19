@@ -82,9 +82,9 @@ export default function EditGoalCard({ goal, toggleEditGoalCard }) {
               />
             </div>
           </div>
-          <div className="flex justify-end gap-4 mt-6">
-            <Button color="gray" onClick={toggleEditGoalCard}>
-              Cancel
+          <div className="flex justify gap-4 mt-6">
+            <Button color="failure" onClick={toggleEditGoalCard}>
+              Close
             </Button>
             <Button type="submit" color="blue">
               Save Changes
