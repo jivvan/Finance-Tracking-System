@@ -85,6 +85,12 @@ def create_transaction():
     if not category:
         return jsonify({'message': 'Category not found'}), 404
 
+    if category.category_type == 'expense' and amount > 0:
+        return jsonify({'message': 'Invalid amount'}), 400
+    
+    if category.category_type == 'income' and amount < 0:
+        return jsonify({'message': 'Invalid amount'}), 400
+
     new_transaction = Transaction(
         amount=amount,
         description=description,
@@ -140,6 +146,11 @@ def update_transaction(transaction_id):
             id=category_id, user_id=user_id).first()
         if not category:
             return jsonify({'message': 'Category not found'}), 404
+        if category.category_type == 'expense' and amount > 0:
+            return jsonify({'message': 'Invalid amount'}), 400
+        
+        if category.category_type == 'income' and amount < 0:
+            return jsonify({'message': 'Invalid amount'}), 400
         transaction.category_id = category_id
 
     new_account = Account.query.filter_by(id=transaction.account_id).first()

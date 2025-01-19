@@ -30,7 +30,7 @@ const LoadingScreen = () => {
 
         {/* Optional Subtext */}
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Please wait while we prepare your dashboard.
+          Please wait while we crunch some numbers.
         </p>
       </div>
     </div>

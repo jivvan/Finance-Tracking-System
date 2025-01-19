@@ -57,9 +57,12 @@ function Categories() {
     }
   };
 
-
-  const expenseCategories = categories.filter((cat) => cat.category_type === "expense");
-  const incomeCategories = categories.filter((cat) => cat.category_type === "income");
+  const expenseCategories = categories.filter(
+    (cat) => cat.category_type === "expense"
+  );
+  const incomeCategories = categories.filter(
+    (cat) => cat.category_type === "income"
+  );
 
   return (
     <>
@@ -73,7 +76,9 @@ function Categories() {
 
         {/* Expense Table */}
         <div className="mt-6 overflow-x-auto">
-          <h2 className="text-xl font-semibold dark:text-white mb-4">Expense Categories</h2>
+          <h2 className="mb-4 text-xl font-semibold dark:text-white">
+            Expense Categories
+          </h2>
           <Table hoverable={true}>
             <Table.Head>
               <Table.HeadCell>SN</Table.HeadCell>
@@ -90,7 +95,11 @@ function Categories() {
                 >
                   <Table.Cell>{index + 1}</Table.Cell>
                   <Table.Cell>{category.name}</Table.Cell>
-                  <Table.Cell>{category.category_type}</Table.Cell>
+                  <Table.Cell>
+                    {category.category_type === "expense"
+                      ? "Expense"
+                      : "Income"}
+                  </Table.Cell>
                   <Table.Cell>{category.limit.toFixed(2)}</Table.Cell>
                   <Table.Cell>
                     <Button
@@ -109,13 +118,14 @@ function Categories() {
 
         {/* Income Table */}
         <div className="mt-6 overflow-x-auto">
-          <h2 className="text-xl font-semibold dark:text-white mb-4">Income Categories</h2>
+          <h2 className="mb-4 text-xl font-semibold dark:text-white">
+            Income Categories
+          </h2>
           <Table hoverable={true}>
             <Table.Head>
               <Table.HeadCell>SN</Table.HeadCell>
               <Table.HeadCell>Category Name</Table.HeadCell>
               <Table.HeadCell>Category Type</Table.HeadCell>
-              <Table.HeadCell>Limit</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {incomeCategories.map((category, index) => (
@@ -125,8 +135,9 @@ function Categories() {
                 >
                   <Table.Cell>{index + 1}</Table.Cell>
                   <Table.Cell>{category.name}</Table.Cell>
-                  <Table.Cell>{category.category_type}</Table.Cell>
-                  <Table.Cell>{category.limit.toFixed(2)}</Table.Cell>
+                  <Table.Cell>
+                    {category.category_type === "income" ? "Income" : "Expense"}
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -135,46 +146,52 @@ function Categories() {
       </main>
 
       {/* Edit Limit Modal */}
-      
-  {showModal && (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="p-6 bg-white rounded-lg dark:bg-gray-800 w-96">
-        <h2 className="mb-4 text-xl font-bold dark:text-white">Edit Category Limit</h2>
-        <form onSubmit={(e) => { e.preventDefault(); handleEditSubmit(); }}>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="category-name">Category Name</Label>
-              <TextInput
-                id="category-name"
-                value={selectedCategory?.name || ""}
-                disabled
-              />
-            </div>
-            <div>
-              <Label htmlFor="category-limit">Limit</Label>
-              <TextInput
-                id="category-limit"
-                type="number"
-                value={limit}
-                onChange={(e) => setLimit(e.target.value)}
-                placeholder="Enter new limit"
-                required
-              />
-            </div>
-          </div>
-          <div className="flex justify gap-4 mt-6">
-            <Button color="failure" onClick={() => setShowModal(false)}>
-              Close
-            </Button>
-            <Button type="submit" color="blue">
-              Save Changes
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )}
 
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded-lg dark:bg-gray-800 w-96">
+            <h2 className="mb-4 text-xl font-bold dark:text-white">
+              Edit Category Limit
+            </h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleEditSubmit();
+              }}
+            >
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="category-name">Category Name</Label>
+                  <TextInput
+                    id="category-name"
+                    value={selectedCategory?.name || ""}
+                    disabled
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="category-limit">Limit</Label>
+                  <TextInput
+                    id="category-limit"
+                    type="number"
+                    value={limit}
+                    onChange={(e) => setLimit(e.target.value)}
+                    placeholder="Enter new limit"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex gap-4 mt-6 justify">
+                <Button color="failure" onClick={() => setShowModal(false)}>
+                  Close
+                </Button>
+                <Button type="submit" color="blue">
+                  Save Changes
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Card,
-  Button,
-  Label,
-  Select,
-  TextInput,
-  Table,
-} from "flowbite-react";
+import { Card, Button, Label, Select, TextInput, Table } from "flowbite-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuickCreate from "../Components/QuickCreate";
@@ -29,6 +22,7 @@ function Transactions() {
   const updateAccountBalance = useStore((state) => state.updateAccountBalance);
 
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false); // for editing and deleting process
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -128,6 +122,7 @@ function Transactions() {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setProcessing(true);
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
@@ -160,8 +155,13 @@ function Transactions() {
         fetchTransactions(currentPage); // Refresh the transactions list
       }
     } catch (error) {
-      console.error("Error updating transaction:", error);
-      toast.error("Failed to update transaction. Please try again.");
+      if (error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to update transaction. Please try again.");
+      }
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -171,6 +171,7 @@ function Transactions() {
   };
 
   const confirmDelete = async () => {
+    setProcessing(true);
     const token = localStorage.getItem("token");
     try {
       const response = await axios.delete(
@@ -202,6 +203,7 @@ function Transactions() {
     } finally {
       setIsDeleteModalOpen(false);
       setTransactionToDelete(null);
+      setProcessing(false);
     }
   };
 
@@ -403,22 +405,31 @@ function Transactions() {
                     onChange={handleInputChange}
                     required
                   >
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
+                    {categories
+                      .filter(
+                        (cat) =>
+                          categories.find(
+                            (cat) => cat.id === editingTransaction.category_id
+                          ).category_type === cat.category_type
+                      )
+                      .map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
                   </Select>
                 </div>
               </div>
               <div className="flex justify-end gap-4 mt-6">
-                <Button
-                  color="gray"
-                  onClick={() => setIsEditModalOpen(false)}
-                >
+                <Button color="gray" onClick={() => setIsEditModalOpen(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" color="blue">
+                <Button
+                  isProcessing={processing}
+                  disabled={processing}
+                  type="submit"
+                  color="blue"
+                >
                   Save Changes
                 </Button>
               </div>
@@ -438,13 +449,15 @@ function Transactions() {
               Are you sure you want to delete this transaction?
             </p>
             <div className="flex justify-end gap-4 mt-6">
-              <Button
-                color="blue"
-                onClick={() => setIsDeleteModalOpen(false)}
-              >
+              <Button color="blue" onClick={() => setIsDeleteModalOpen(false)}>
                 Cancel
               </Button>
-              <Button color="failure" onClick={confirmDelete}>
+              <Button
+                isProcessing={processing}
+                disabled={processing}
+                color="failure"
+                onClick={confirmDelete}
+              >
                 Delete
               </Button>
             </div>
