@@ -61,7 +61,7 @@ const ExpensePrediction = ({ dashSummary }) => {
       {
         label: "Forecasted Expenses",
         data: forecastData,
-        borderColor: "rgba(192,75,192,1)",
+        borderColor: "#ff6384",
         fill: false,
       },
     ],

@@ -52,21 +52,6 @@ export default function Goals() {
     return Math.round((currentAmount / targetAmount) * 100);
   };
 
-  const refreshGoals = async () => {
-    // Fetch goals from the API and update the state
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.get(`${API_URL}/api/goals`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      useStore.setState({ goals: response.data.goals });
-    } catch (error) {
-      console.error("Error fetching goals:", error);
-    }
-  };
-
   return (
     <>
       <main className="p-4">
@@ -179,7 +164,6 @@ export default function Goals() {
           <EditGoalCard
             goal={selectedGoal}
             toggleEditGoalCard={toggleEditGoalCard}
-            refreshGoals={refreshGoals}
           />
         )}
       {showDeleteGoalCard &&
@@ -187,7 +171,6 @@ export default function Goals() {
           <DeleteGoalCard
             goal={selectedGoal}
             toggleDeleteGoalCard={toggleDeleteGoalCard}
-            refreshGoals={refreshGoals}
           />
         )}
     </>

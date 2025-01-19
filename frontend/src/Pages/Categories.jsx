@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 function Categories() {
   const categories = useStore((state) => state.categories);
+  const setCategories = useStore((state) => state.setCategories);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [limit, setLimit] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -41,6 +42,14 @@ function Categories() {
       if (response.status === 200) {
         setShowModal(false);
         toast.success("Category limit updated successfully!");
+        setCategories(
+          categories.map((c) => {
+            if (c.id === selectedCategory.id) {
+              c.limit = updatedCategory.limit;
+            }
+            return c;
+          })
+        );
       }
     } catch (error) {
       console.error("Error updating category limit:", error);

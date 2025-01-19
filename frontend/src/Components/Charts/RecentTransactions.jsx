@@ -62,7 +62,9 @@ const RecentTransactions = ({ dashSummary }) => {
         </Table.Body>
       </Table>
       {transactions.length === 0 && (
-        <p>Create income/expense transactions to see them here</p>
+        <p className="dark:text-gray-200">
+          Create income/expense transactions to see them here
+        </p>
       )}
     </Card>
   );

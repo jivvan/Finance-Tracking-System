@@ -26,6 +26,7 @@ function Transactions() {
   const updateDash = useStore((state) => state.updateDash);
   const accounts = useStore((state) => state.accounts);
   const categories = useStore((state) => state.categories);
+  const updateAccountBalance = useStore((state) => state.updateAccountBalance);
 
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,7 +142,22 @@ function Transactions() {
       if (response.status === 200) {
         toast.success("Transaction updated successfully!");
         setIsEditModalOpen(false);
-        fetchTransactions(currentPage);
+        updateAccountBalance(
+          {
+            id: editingTransaction.account_id,
+            amount: -editingTransaction.amount,
+          },
+          "self"
+        );
+        updateAccountBalance(
+          {
+            id: formData.account_id,
+            amount: formData.amount,
+          },
+          "self"
+        );
+        updateDash();
+        fetchTransactions(currentPage); // Refresh the transactions list
       }
     } catch (error) {
       console.error("Error updating transaction:", error);
@@ -150,8 +166,8 @@ function Transactions() {
   };
 
   const handleDeleteClick = (transactionId) => {
-    setTransactionToDelete(transactionId);
-    setIsDeleteModalOpen(true);
+    setTransactionToDelete(parseInt(transactionId));
+    setIsDeleteModalOpen(true); // Open the confirmation modal
   };
 
   const confirmDelete = async () => {
@@ -168,6 +184,17 @@ function Transactions() {
       if (response.status === 200) {
         toast.success("Transaction deleted successfully!");
         fetchTransactions(currentPage);
+        const deletingTransaction = transactions.find(
+          (t) => t.id === transactionToDelete
+        );
+        updateAccountBalance(
+          {
+            id: deletingTransaction.account_id,
+            amount: -deletingTransaction.amount,
+          },
+          "self"
+        );
+        updateDash();
       }
     } catch (error) {
       console.error("Error deleting transaction:", error);
@@ -241,7 +268,7 @@ function Transactions() {
                       {transaction.description}
                     </TableCell>
                     <TableCell>
-                      {new Date(transaction.date).toLocaleString()}
+                      {new Date(transaction.date).toLocaleDateString()}
                     </TableCell>
                     <TableCell
                       className={`font-semibold ${
@@ -250,7 +277,10 @@ function Transactions() {
                           : "text-green-500"
                       }`}
                     >
-                      Rs. {transaction.amount}
+                      Rs.{" "}
+                      {transaction.amount < 0
+                        ? -transaction.amount
+                        : transaction.amount}
                     </TableCell>
                     <TableCell>
                       {getAccountName(transaction.account_id)}

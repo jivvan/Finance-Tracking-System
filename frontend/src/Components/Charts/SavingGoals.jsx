@@ -35,9 +35,14 @@ const SavingGoals = () => {
               />
             </div>
           ))}
+          <Link className="flex" to="/goals">
+            <Badge color="blue">View all</Badge>
+          </Link>
         </>
       ) : (
-        <p>Create saving goals to see them here</p>
+        <p className="dark:text-gray-200">
+          Create saving goals to see them here
+        </p>
       )}
     </Card>
   );

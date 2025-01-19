@@ -5,8 +5,10 @@ import { Button, TextInput, Textarea, Select, Label } from "flowbite-react"; // 
 import { useStore } from "../lib/utils";
 
 export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
-  const [accounts, setAccounts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const accounts = useStore((state) => state.accounts);
+  const allCategories = useStore((state) => state.categories);
+  const categories = allCategories.filter((c) => c.category_type === "income");
+
   const [selectedAccount, setSelectedAccount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [amount, setAmount] = useState("");
@@ -15,42 +17,6 @@ export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   const updateAccountBalance = useStore((state) => state.updateAccountBalance);
-
-  useEffect(() => {
-    const fetchAccountsAndCategories = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const accountsResponse = await axios.get(
-          import.meta.env.VITE_API_URL + "/api/accounts",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setAccounts(accountsResponse.data);
-
-        const categoriesResponse = await axios.get(
-          import.meta.env.VITE_API_URL + "/api/categories",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCategories(
-          categoriesResponse.data.filter(
-            (cat) => cat.category_type === "income"
-          )
-        );
-      } catch (e) {
-        toast.error("Failed to fetch data");
-      }
-    };
-
-    fetchAccountsAndCategories();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,8 +35,10 @@ export default function IncomeCard({ refreshFn, toggleIncomeCard }) {
     setLoading(true);
 
     try {
+      const now = new Date();
+      const timeString = now.toTimeString().split(" ")[0];
       // Format the date as "YYYY-MM-DD HH:MM:SS"
-      const formattedDate = `${date} 00:00:00`; // Append "00:00:00" for time
+      const formattedDate = `${date} ${timeString}`; // Append the current time
 
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/api/transactions",
