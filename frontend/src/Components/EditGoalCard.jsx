@@ -17,7 +17,6 @@ export default function EditGoalCard({
   const [formData, setFormData] = useState({
     name: goal.name,
     target_amount: goal.target_amount,
-    current_amount: goal.current_amount,
   });
 
   const API_URL = import.meta.env.VITE_API_URL;
@@ -81,21 +80,10 @@ export default function EditGoalCard({
                 required
               />
             </div>
-            <div>
-              <Label htmlFor="current_amount">Current Amount</Label>
-              <TextInput
-                id="current_amount"
-                name="current_amount"
-                type="number"
-                value={formData.current_amount}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
           </div>
-          <div className="flex justify-end gap-4 mt-6">
-            <Button color="gray" onClick={toggleEditGoalCard}>
-              Cancel
+          <div className="flex justify gap-4 mt-6">
+            <Button color="failure" onClick={toggleEditGoalCard}>
+              Close
             </Button>
             <Button type="submit" color="blue">
               Save Changes

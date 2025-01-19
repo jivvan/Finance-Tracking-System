@@ -40,10 +40,10 @@ export default function DeleteGoalCard({
           Are you sure you want to delete the goal "{goal.name}"?
         </p>
         <div className="flex justify-end gap-4">
-          <Button color="gray" onClick={toggleDeleteGoalCard}>
+          <Button color="blue" onClick={toggleDeleteGoalCard}>
             Cancel
           </Button>
-          <Button color="red" onClick={handleDelete}>
+          <Button color="failure" onClick={handleDelete}>
             Delete
           </Button>
         </div>
