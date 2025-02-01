@@ -22,7 +22,7 @@ def create_app(mode='development'):
         app,
         resources={
             r"/*": {
-                "origins": ["http://localhost:5173", "https://finance.parajulijivan.com.np"],
+                "origins": ["http://localhost:3000", "https://finance.jivanparajuli.com.np"],
                 "allow_headers": ["Content-Type", "Authorization"],
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "supports_credentials": True,
