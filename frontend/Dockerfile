@@ -2,7 +2,7 @@ FROM node:20-slim AS build
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --production
+RUN npm install
 COPY . .
 
 ARG VITE_API_URL
